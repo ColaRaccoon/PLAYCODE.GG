@@ -1,0 +1,309 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>접속 통계 - 관리자</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/common.css">
+</head>
+<body class="bg-[#222230] text-white min-h-screen">
+
+  <div class="container max-w-7xl mx-auto px-4 py-8">
+
+    <!-- 헤더 -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-blue-400">접속 통계</h1>
+          <p class="text-gray-400 mt-2">사이트 방문자 및 페이지뷰 통계를 확인할 수 있습니다.</p>
+        </div>
+        <div class="flex gap-3">
+          <button id="autoRefreshToggle" onclick="toggleAutoRefresh()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+            <svg class="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            자동 갱신 중
+          </button>
+          <button onclick="window.location.href='/admin/dashboard'" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+            ← 대시보드
+          </button>
+          <button onclick="window.location.href='/'" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+            메인으로
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로딩 상태 -->
+    <div id="loadingState" class="text-center py-20">
+      <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      <p class="text-gray-400 mt-4 text-lg">통계를 불러오는 중...</p>
+    </div>
+
+    <!-- 통계 컨텐츠 -->
+    <div id="statsContent" class="hidden">
+
+      <!-- 주요 지표 카드 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+
+        <!-- 동시 접속자 -->
+        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-green-100 text-sm mb-2">현재 접속자</div>
+              <div class="text-white text-3xl font-bold" id="onlineUsers">-</div>
+              <div class="text-green-100 text-xs mt-1">최근 5분 활동</div>
+            </div>
+            <svg class="w-12 h-12 text-green-100 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 플레이중인 유저 -->
+        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-6 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-red-100 text-sm mb-2">플레이중인 유저</div>
+              <div class="text-white text-3xl font-bold" id="playingUsers">-</div>
+              <div class="text-red-100 text-xs mt-1">게임 진행 중</div>
+            </div>
+            <svg class="w-12 h-12 text-red-100 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 일일 방문자 -->
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-blue-100 text-sm mb-2">오늘 방문자</div>
+              <div class="text-white text-3xl font-bold" id="dailyVisitors">-</div>
+              <div class="text-blue-100 text-xs mt-1">고유 IP 기준</div>
+            </div>
+            <svg class="w-12 h-12 text-blue-100 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 주간 방문자 -->
+        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-purple-100 text-sm mb-2">주간 방문자</div>
+              <div class="text-white text-3xl font-bold" id="weeklyVisitors">-</div>
+              <div class="text-purple-100 text-xs mt-1">최근 7일</div>
+            </div>
+            <svg class="w-12 h-12 text-purple-100 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 월간 방문자 -->
+        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-orange-100 text-sm mb-2">월간 방문자</div>
+              <div class="text-white text-3xl font-bold" id="monthlyVisitors">-</div>
+              <div class="text-orange-100 text-xs mt-1">최근 30일</div>
+            </div>
+            <svg class="w-12 h-12 text-orange-100 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 페이지뷰 통계 -->
+      <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600 mb-8">
+        <h2 class="text-xl font-bold mb-4 text-gray-200">페이지뷰 통계</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-1">일일 페이지뷰</div>
+            <div class="text-white text-2xl font-bold" id="dailyPageviews">-</div>
+          </div>
+
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-1">주간 페이지뷰</div>
+            <div class="text-white text-2xl font-bold" id="weeklyPageviews">-</div>
+          </div>
+
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-1">월간 페이지뷰</div>
+            <div class="text-white text-2xl font-bold" id="monthlyPageviews">-</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 서버 리소스 모니터링 -->
+      <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600 mb-8">
+        <h2 class="text-xl font-bold mb-4 text-gray-200">🖥️ 서버 리소스 (EC2 실시간 현황)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <!-- CPU 사용률 -->
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-2">CPU 사용률</div>
+            <div class="flex items-end justify-between">
+              <div class="text-white text-3xl font-bold" id="cpuUsage">-</div>
+              <div class="text-gray-400 text-sm mb-1">%</div>
+            </div>
+            <div class="mt-2 bg-gray-600 rounded-full h-2 overflow-hidden">
+              <div id="cpuUsageBar" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="text-gray-400 text-xs mt-2" id="cpuCores">- Cores</div>
+          </div>
+
+          <!-- 메모리 사용률 -->
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-2">메모리 사용률</div>
+            <div class="flex items-end justify-between">
+              <div class="text-white text-3xl font-bold" id="memUsage">-</div>
+              <div class="text-gray-400 text-sm mb-1">%</div>
+            </div>
+            <div class="mt-2 bg-gray-600 rounded-full h-2 overflow-hidden">
+              <div id="memUsageBar" class="bg-green-500 h-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="text-gray-400 text-xs mt-2" id="memInfo">- GB / - GB</div>
+          </div>
+
+          <!-- 디스크 사용률 -->
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-2">디스크 사용률</div>
+            <div class="flex items-end justify-between">
+              <div class="text-white text-3xl font-bold" id="diskUsage">-</div>
+              <div class="text-gray-400 text-sm mb-1">%</div>
+            </div>
+            <div class="mt-2 bg-gray-600 rounded-full h-2 overflow-hidden">
+              <div id="diskUsageBar" class="bg-orange-500 h-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="text-gray-400 text-xs mt-2" id="diskInfo">- GB / - GB</div>
+          </div>
+
+        </div>
+
+        <!-- 서버 정보 -->
+        <div class="mt-4 bg-gray-700/30 rounded-lg p-4">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>
+              <div class="text-gray-400 text-xs mb-1">OS</div>
+              <div class="text-white font-mono" id="osInfo">-</div>
+            </div>
+            <div>
+              <div class="text-gray-400 text-xs mb-1">아키텍처</div>
+              <div class="text-white font-mono" id="archInfo">-</div>
+            </div>
+            <div>
+              <div class="text-gray-400 text-xs mb-1">서버 업타임</div>
+              <div class="text-white font-mono" id="uptimeInfo">-</div>
+            </div>
+            <div>
+              <div class="text-gray-400 text-xs mb-1">마지막 갱신</div>
+              <div class="text-white font-mono" id="lastUpdateInfo">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 시간대별 접속 통계 -->
+      <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600 mb-8">
+        <h2 class="text-xl font-bold mb-4 text-gray-200">오늘 시간대별 접속 현황</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-600">
+                <th class="text-left p-2 text-gray-400">시간</th>
+                <th class="text-right p-2 text-gray-400">방문자</th>
+                <th class="text-right p-2 text-gray-400">페이지뷰</th>
+              </tr>
+            </thead>
+            <tbody id="hourlyStatsTable">
+              <!-- 시간대별 통계가 여기에 표시됩니다 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 일별 접속 통계 -->
+      <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600 mb-8">
+        <h2 class="text-xl font-bold mb-4 text-gray-200">최근 7일 일별 통계</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-600">
+                <th class="text-left p-2 text-gray-400">날짜</th>
+                <th class="text-right p-2 text-gray-400">방문자</th>
+                <th class="text-right p-2 text-gray-400">페이지뷰</th>
+              </tr>
+            </thead>
+            <tbody id="dailyStatsTable">
+              <!-- 일별 통계가 여기에 표시됩니다 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 디버그 정보 (개발/문제 해결용) -->
+      <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-yellow-600">
+        <h2 class="text-xl font-bold mb-4 text-yellow-400">🔍 디버그 정보</h2>
+        <p class="text-gray-400 text-sm mb-4">통계 정확도 확인을 위한 원본 데이터입니다.</p>
+
+        <!-- 고유 IP 정보 -->
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-2 text-gray-200">오늘 수집된 고유 IP</h3>
+          <div class="bg-gray-800/50 rounded-lg p-4">
+            <div class="text-white text-2xl font-bold mb-2" id="debugUniqueIpCount">-</div>
+            <div class="text-gray-400 text-sm mb-3">고유 IP 개수</div>
+            <div class="bg-gray-900/50 rounded p-3 max-h-48 overflow-y-auto">
+              <div class="text-xs font-mono text-gray-300" id="debugIpList">
+                로딩 중...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 최근 로그 -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-lg font-semibold text-gray-200">최근 접속 로그 (최대 50개)</h3>
+            <div class="flex gap-2">
+              <button id="filterUserOnly" onclick="setLogFilter('user')" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
+                유저만 보기
+              </button>
+              <button id="filterAll" onclick="setLogFilter('all')" class="bg-gray-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
+                전체 보기
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="border-b border-gray-600">
+                  <th class="text-left p-2 text-gray-400">IP 주소</th>
+                  <th class="text-left p-2 text-gray-400">경로</th>
+                  <th class="text-left p-2 text-gray-400">시간</th>
+                </tr>
+              </thead>
+              <tbody id="debugRecentLogs" class="font-mono">
+                <!-- 최근 로그가 여기에 표시됩니다 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/js/admin-stats.js"></script>
+</body>
+</html>

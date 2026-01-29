@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Portfolio - 이성현 | Backend Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Print Styles */
+        @media print {
+            .page {
+                page-break-after: always;
+            }
+            .page:last-child {
+                page-break-after: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#222230] text-white text-[16px]">
+
+<!-- Page 1: Profile -->
+<div class="page min-h-screen p-10 md:px-16 md:py-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+            <div class="pt-10">
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold text-[#8BA2FA] mb-6 tracking-wider">ABOUT ME</h2>
+                    <div class="text-base leading-relaxed">
+                        안녕하세요. Node.js 백엔드 개발자 이성현입니다.<br><br>
+                        저는 실시간 멀티플레이어 퀴즈 플랫폼을 1인 개발하였고,
+                        서비스 운영 중 발견한 성능 문제들을 분석하고 개선하며
+                        백엔드 개발의 즐거움을 알았습니다. 나아가 더 깊이 있는
+                        기술적 도전을 경험하고 싶습니다.
+                    </div>
+                </div>
+
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold text-[#8BA2FA] mb-6 tracking-wider">CONTACT</h2>
+                    <div class="space-y-2">
+                        <div class="text-sm">
+                            <span class="font-semibold inline-block min-w-[100px]">Email</span>
+                            <span>seonghyeon2528@gmail.com</span>
+                        </div>
+                        <div class="text-sm">
+                            <span class="font-semibold inline-block min-w-[100px]">Github</span>
+                            <a href="https://github.com/tjdgus4546" class="no-underline font-semibold transition-all duration-300 hover:bg-blue-500 hover:text-white">https://github.com/tjdgus4546</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold text-[#8BA2FA] mb-6 tracking-wider">EDUCATION</h2>
+                    <div class="space-y-2">
+                        <div class="text-sm">
+                            <span class="font-semibold inline-block min-w-[100px]">2017.02~2023.02</span>
+                            <span>시각디자인과</span>
+                        </div>
+                        <div class="text-sm">
+                            <span class="font-semibold inline-block min-w-[100px]">백석대학교</span>
+                            <span>3.06 / 4.5</span>
+                        </div>
+                        <div class="text-sm">
+                            <span class="font-semibold inline-block min-w-[100px]">2024.03~2024.08</span>
+                            <span>K-Digital Training java 풀스택 과정</span>
+                        </div>
+                        <div class="text-sm">
+                            <span class="font-semibold inline-block min-w-[100px]">신세계INC</span>
+                            <span>수료</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold text-[#8BA2FA] mb-6 tracking-wider">SKILLS</h2>
+                    <div class="space-y-5">
+                        <div class="grid grid-cols-[120px_1fr] gap-5 items-start">
+                            <span class="font-semibold">Backend</span>
+                            <ul class="list-none">
+                                <li class="inline mr-3 mb-1  text-white before:content-['•_'] before:text-[#8BA2FA] before:font-bold">Node.js (Express)</li>
+                                <li class="inline mr-3 mb-1  text-white before:content-['•_'] before:text-[#8BA2FA] before:font-bold">Javascript (ES6+)</li>
+                                <li class="inline mr-3 mb-1  text-white before:content-['•_'] before:text-[#8BA2FA] before:font-bold">MongoDB</li>
+                                <li class="inline mr-3 mb-1  text-white before:content-['•_'] before:text-[#8BA2FA] before:font-bold">AWS EC2, AWS S3</li>
+                            </ul>
+                        </div>
+                        <div class="grid grid-cols-[120px_1fr] gap-5 items-start">
+                            <span class="font-semibold">Frontend</span>
+                            <ul class="list-none">
+                                <li class="inline mr-3 mb-1  text-white before:content-['•_'] before:text-[#8BA2FA] before:font-bold">HTML5, CSS3, Javascript (ES6+)</li>
+                                <li class="inline mr-3 mb-1  text-white before:content-['•_'] before:text-[#8BA2FA] before:font-bold">TailwindCSS</li>
+                            </ul>
+                        </div>
+                        <div class="grid grid-cols-[120px_1fr] gap-5 items-start">
+                            <span class="font-semibold">Tools</span>
+                            <ul class="list-none">
+                                <li class="inline mr-3 mb-1  text-white before:content-['•_'] before:text-[#8BA2FA] before:font-bold">Git, Github</li>
+                                <li class="inline mr-3 mb-1  text-white before:content-['•_'] before:text-[#8BA2FA] before:font-bold">VSCode</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-10">
+                <img src="/images/profileImge.jpg" alt="이성현 프로필 사진" class="w-[300px] h-[400px] object-cover rounded-lg shadow-xl">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page 2: Awards & Project Overview -->
+<div class="page min-h-screen p-10 md:px-16 md:py-6">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-[#8BA2FA] mb-8 tracking-wider">AWARDS</h2>
+        <div class="bg-black/30 p-8 rounded-xl mb-16   ">
+            <div class="text-slate-500 text-sm mb-2">2024-08~2024-09</div>
+            <div class="text-xl font-bold mb-1">2024 연구데이터 분석활용 경진대회</div>
+            <div class="text-slate-500 text-sm mb-4">과학기술정보통신부</div>
+            <div class="text-sm leading-relaxed">
+                연구 데이터를 활용해 분석 활용 사례를 만드는 경진대회로
+                저희 팀은 논문을 분석하여 가독성 있게 알려주는 LLM을
+                제작하여 <strong>우수상</strong>을 수상했습니다.<br>
+                저는 팀원이 개발한 모델을 웹 인터페이스에서 사용
+                가능하도록 실시간 채팅 기반 웹 서비스를 구현했습니다.
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-bold text-[#8BA2FA] mb-8 tracking-wider">PROJECT</h2>
+        <div class="flex justify-between items-center mb-10">
+            <div class="text-2xl font-bold">PLAYCODE.GG - 실시간 멀티플레이어 퀴즈 플랫폼</div>
+            <div>
+                <a class="text-2xl font-bold pr-2">링크:</a>
+                <a href="https://playcode.gg" target="_blank" class="text-2xl inline-block text-[#8BA2FA] no-underline font-semibold transition-all duration-300 hover:bg-blue-500 hover:text-white">
+                    https://playcode.gg
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-black/30 p-6 rounded-xl mb-8">
+            <h4 class="text-lg font-bold mb-4">프로젝트 개요</h4>
+            <ul class="list-none space-y-1">
+                <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">개발기간: 2025.05 ~ 2025.11</li>
+                <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">1인 풀스택 개발 (기획/개발/배포/운영)</li>
+                <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">기술 스택: Node.js, Express.js, MongoDB, Redis, Socket.IO, Javascript, AWS EC2, AWS S3</li>
+            </ul>
+        </div>
+
+        <div class="mb-10">
+            <h3 class="text-lg font-bold mb-4">프로젝트를 시작한 배경 및 목표</h3>
+            <p class="text-sm leading-relaxed mb-4">
+                평소 친구들과 퀴즈 사이트에서 퀴즈를 풀며 경쟁하는
+                것을 즐겼지만, 기존 퀴즈 플랫폼들은 혼자서 문제를 푸는
+                형태가 대부분이었고 실시간으로 여러 명이 함께 경쟁하며
+                소통할 수 있는 서비스를 찾기 어려웠습니다.
+            </p>
+            <p class="text-sm leading-relaxed mb-4">
+                이러한 문제를 해결하기 위해 최대 12명이 동시에
+                참여하고, 실시간 채팅으로 소통하며, 즉각적으로 순위를
+                확인할 수 있는 멀티플레이어 퀴즈 플랫폼을 개발했습니다.
+            </p>
+            <p class="text-sm leading-relaxed">
+                특히 실시간 동기화, 동시성 제어, 서버 확장성 등
+                멀티플레이어 서비스 특유의 기술적 문제들을 직접
+                경험하고 해결하고 싶었습니다.
+            </p>
+        </div>
+
+        <div>
+            <h3 class="text-lg font-bold mb-4">주요 기능</h3>
+
+            <div class="mb-6">
+                <div class="text-lg font-bold mb-3">1. 실시간 멀티플레이어 퀴즈 세션</div>
+                <ul class="list-none space-y-1 pl-5">
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">최대 12명 동시 참여</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">Socket.IO 기반 실시간 동기화</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">Redis 원자적 연산으로 퀴즈 경쟁성 구현</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">실시간 점수 및 순위 업데이트</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">게임 종료 시 퍼센타일 랭킹 표시</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <div class="text-lg font-bold mb-3">2. 다양한 문제 유형의 퀴즈 제작 지원</div>
+                <ul class="list-none space-y-1 pl-5">
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">주관식, 객관식, 이미지, 영상, 오디오유형 지원</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">AWS S3 기반 이미지 저장</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">YouTube IFrame API (특정 구간 재생)</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">문제별 자동 저장 (작업 손실 방지)</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <div class="text-lg font-bold mb-3">3. 낮은 진입 장벽</div>
+                <ul class="list-none space-y-1 pl-5">
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">게스트 모드 (비회원 즉시 플레이)</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">OAuth 2.0 소셜 로그인 (Google, Naver)</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">초대 코드로 간편한 방 참여</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="text-lg font-bold mb-3">4. 실시간 채팅 & 커뮤니티</div>
+                <ul class="list-none space-y-1 pl-5">
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">게임 중 플레이어 간 실시간 소통</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">댓글 및 추천 시스템</li>
+                    <li class="text-sm before:content-['•_'] before:text-[#8BA2FA] before:font-bold">신고 기능 및 관리자 대시보드</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page 3: System Architecture -->
+<div class="page min-h-screen p-10 md:px-16 md:py-6">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-[#8BA2FA] mb-6 tracking-wider">시스템 아키텍처</h2>
+
+        <div class="mb-8 text-sm leading-relaxed text-gray-300">
+            PM2 클러스터 모드를 활용한 분산 시스템 구조로,
+            여러 Worker 프로세스가 Redis를 통해 협력하여
+            높은 확장성과 안정성을 확보했습니다.
+        </div>
+
+        <!-- Architecture Diagram -->
+        <div class="bg-black/30 p-6 rounded-xl mb-8">
+            <svg viewBox="0 0 1000 730" class="w-full h-auto">
+                <!-- Client Layer -->
+                <g id="client-layer">
+                    <rect x="50" y="20" width="900" height="140" fill="#3B82F6" opacity="0.2" stroke="#3B82F6" stroke-width="2" rx="8"/>
+                    <text x="500" y="50" font-size="20" font-weight="bold" fill="#3B82F6" text-anchor="middle">Client Layer</text>
+
+                    <!-- Client Components -->
+                    <rect x="120" y="70" width="200" height="70" fill="#1E40AF" stroke="#3B82F6" stroke-width="2" rx="6"/>
+                    <text x="220" y="100" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Game UI</text>
+                    <text x="220" y="120" font-size="12" fill="#93C5FD" text-anchor="middle">(Real-time)</text>
+
+                    <rect x="400" y="70" width="200" height="70" fill="#1E40AF" stroke="#3B82F6" stroke-width="2" rx="6"/>
+                    <text x="500" y="100" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Quiz Editor</text>
+                    <text x="500" y="120" font-size="12" fill="#93C5FD" text-anchor="middle">(Create/Edit)</text>
+
+                    <rect x="680" y="70" width="200" height="70" fill="#1E40AF" stroke="#3B82F6" stroke-width="2" rx="6"/>
+                    <text x="780" y="100" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Community</text>
+                    <text x="780" y="120" font-size="12" fill="#93C5FD" text-anchor="middle">(댓글/추천)</text>
+                </g>
+
+                <!-- Arrows from Client to Cluster -->
+                <g id="client-to-cluster-arrows">
+                    <line x1="220" y1="140" x2="220" y2="240" stroke="#8BA2FA" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <text x="240" y="180" font-size="11" fill="#8BA2FA">Socket.IO</text>
+
+                    <line x1="500" y1="140" x2="500" y2="240" stroke="#8BA2FA" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <text x="520" y="180" font-size="11" fill="#8BA2FA">REST API</text>
+
+                    <line x1="780" y1="140" x2="780" y2="240" stroke="#8BA2FA" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <text x="800" y="180" font-size="11" fill="#8BA2FA">REST API</text>
+                </g>
+
+                <!-- Application Layer (Cluster Mode) -->
+                <g id="app-layer">
+                    <rect x="50" y="250" width="900" height="200" fill="#10B981" opacity="0.2" stroke="#10B981" stroke-width="2" rx="8"/>
+                    <text x="500" y="280" font-size="20" font-weight="bold" fill="#10B981" text-anchor="middle">Application Layer (AWS EC2 - PM2 Cluster Mode)</text>
+                    <text x="500" y="300" font-size="13" fill="#6EE7B7" text-anchor="middle">단일 포트에서 여러 Worker 프로세스가 요청 분산 처리</text>
+
+                    <!-- Worker 1 -->
+                    <rect x="100" y="320" width="220" height="110" fill="#047857" stroke="#10B981" stroke-width="2" rx="6"/>
+                    <text x="210" y="345" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Worker 1</text>
+                    <text x="210" y="365" font-size="12" fill="#D1FAE5" text-anchor="middle">Node.js + Express</text>
+                    <text x="210" y="385" font-size="12" fill="#D1FAE5" text-anchor="middle">Socket.IO Server</text>
+                    <text x="210" y="405" font-size="12" fill="#D1FAE5" text-anchor="middle">REST API</text>
+
+                    <!-- Worker 2 -->
+                    <rect x="390" y="320" width="220" height="110" fill="#047857" stroke="#10B981" stroke-width="2" rx="6"/>
+                    <text x="500" y="345" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Worker 2</text>
+                    <text x="500" y="365" font-size="12" fill="#D1FAE5" text-anchor="middle">Node.js + Express</text>
+                    <text x="500" y="385" font-size="12" fill="#D1FAE5" text-anchor="middle">Socket.IO Server</text>
+                    <text x="500" y="405" font-size="12" fill="#D1FAE5" text-anchor="middle">REST API</text>
+
+                    <!-- Worker N -->
+                    <rect x="680" y="320" width="220" height="110" fill="#047857" stroke="#10B981" stroke-width="2" rx="6"/>
+                    <text x="790" y="345" font-size="16" font-weight="bold" fill="white" text-anchor="middle">Worker N</text>
+                    <text x="790" y="365" font-size="12" fill="#D1FAE5" text-anchor="middle">Node.js + Express</text>
+                    <text x="790" y="385" font-size="12" fill="#D1FAE5" text-anchor="middle">Socket.IO Server</text>
+                    <text x="790" y="405" font-size="12" fill="#D1FAE5" text-anchor="middle">REST API</text>
+                </g>
+
+                <!-- Arrows from Workers to Data Layer -->
+                <g id="workers-to-data">
+                    <line x1="210" y1="430" x2="250" y2="500" stroke="#8BA2FA" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="500" y1="430" x2="250" y2="500" stroke="#8BA2FA" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="790" y1="430" x2="250" y2="500" stroke="#8BA2FA" stroke-width="3" marker-end="url(#arrowhead)"/>
+
+                    <line x1="210" y1="430" x2="500" y2="520" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowhead-orange)"/>
+                    <line x1="500" y1="430" x2="500" y2="520" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowhead-orange)"/>
+                    <line x1="790" y1="430" x2="500" y2="520" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrowhead-orange)"/>
+
+                    <line x1="210" y1="430" x2="750" y2="520" stroke="#A855F7" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+                    <line x1="500" y1="430" x2="750" y2="520" stroke="#A855F7" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+                    <line x1="790" y1="430" x2="750" y2="520" stroke="#A855F7" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+                </g>
+
+                <!-- Data Layer -->
+                <g id="data-layer">
+                    <!-- Redis (핵심!) -->
+                    <rect x="80" y="510" width="280" height="150" fill="#DC2626" opacity="0.3" stroke="#EF4444" stroke-width="3" rx="8"/>
+                    <text x="220" y="540" font-size="18" font-weight="bold" fill="#FCA5A5" text-anchor="middle">Redis</text>
+                    <text x="220" y="565" font-size="12" fill="#FEE2E2" text-anchor="middle">1. 세션 공유 (Worker 간)</text>
+                    <text x="220" y="585" font-size="12" fill="#FEE2E2" text-anchor="middle">2. Pub/Sub (Socket.IO)</text>
+                    <text x="220" y="605" font-size="12" fill="#FEE2E2" text-anchor="middle">3. 동시성 제어 (SET NX)</text>
+                    <text x="220" y="625" font-size="12" fill="#FEE2E2" text-anchor="middle">4. 첫 정답자 판정</text>
+                    <text x="220" y="645" font-size="13" font-weight="bold" fill="#FF6B6B" text-anchor="middle">⚡ 클러스터 모드 핵심</text>
+
+                    <!-- MongoDB -->
+                    <rect x="400" y="530" width="240" height="130" fill="#F97316" opacity="0.3" stroke="#FB923C" stroke-width="2" rx="8"/>
+                    <text x="520" y="560" font-size="18" font-weight="bold" fill="#FED7AA" text-anchor="middle">MongoDB</text>
+                    <text x="520" y="585" font-size="12" fill="#FFEDD5" text-anchor="middle">• 사용자 정보</text>
+                    <text x="520" y="605" font-size="12" fill="#FFEDD5" text-anchor="middle">• 퀴즈 데이터</text>
+                    <text x="520" y="625" font-size="12" fill="#FFEDD5" text-anchor="middle">• 게임 결과</text>
+                    <text x="520" y="645" font-size="12" fill="#FFEDD5" text-anchor="middle">• S3 키 저장</text>
+
+                    <!-- AWS S3 -->
+                    <rect x="680" y="530" width="240" height="130" fill="#A855F7" opacity="0.3" stroke="#C084FC" stroke-width="2" rx="8"/>
+                    <text x="800" y="560" font-size="18" font-weight="bold" fill="#E9D5FF" text-anchor="middle">AWS S3</text>
+                    <text x="800" y="585" font-size="12" fill="#F3E8FF" text-anchor="middle">• 퀴즈 이미지</text>
+                    <text x="800" y="605" font-size="12" fill="#F3E8FF" text-anchor="middle">• 썸네일</text>
+                    <text x="800" y="625" font-size="12" fill="#F3E8FF" text-anchor="middle">• Presigned URL</text>
+                    <text x="800" y="645" font-size="12" fill="#F3E8FF" text-anchor="middle">• 독립 스토리지</text>
+                </g>
+
+                <!-- Arrow markers -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#8BA2FA" />
+                    </marker>
+                    <marker id="arrowhead-orange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#F59E0B" />
+                    </marker>
+                    <marker id="arrowhead-purple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#A855F7" />
+                    </marker>
+                </defs>
+
+                <!-- Legend -->
+                <g id="legend" transform="translate(50, 690)">
+                    <text x="0" y="0" font-size="14" font-weight="bold" fill="#8BA2FA">데이터 흐름</text>
+                    <line x1="0" y1="15" x2="40" y2="15" stroke="#8BA2FA" stroke-width="3"/>
+                    <text x="50" y="20" font-size="11" fill="#D1D5DB">Redis (세션/동시성)</text>
+
+                    <line x1="200" y1="15" x2="240" y2="15" stroke="#F59E0B" stroke-width="2"/>
+                    <text x="250" y="20" font-size="11" fill="#D1D5DB">MongoDB (데이터)</text>
+
+                    <line x1="400" y1="15" x2="440" y2="15" stroke="#A855F7" stroke-width="2"/>
+                    <text x="450" y="20" font-size="11" fill="#D1D5DB">AWS S3 (이미지)</text>
+                </g>
+
+                <!-- Cluster Mode Badge -->
+                <rect x="800" y="260" width="140" height="30" fill="#DC2626" rx="15"/>
+                <text x="870" y="280" font-size="13" font-weight="bold" fill="white" text-anchor="middle">🚀 Cluster Mode</text>
+            </svg>
+        </div>
+
+        <!-- Key Points -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-black/30 p-5 rounded-xl">
+                <h3 class="text-base font-bold mb-2 text-red-400">Redis 기반 분산 처리</h3>
+                <ul class="text-xs space-y-1 text-gray-300">
+                    <li>• Worker 간 세션 공유</li>
+                    <li>• Pub/Sub 실시간 메시징</li>
+                    <li>• SET NX 동시성 제어</li>
+                </ul>
+            </div>
+
+            <div class="bg-black/30 p-5 rounded-xl">
+                <h3 class="text-base font-bold mb-2 text-green-400">CPU 멀티코어 활용</h3>
+                <ul class="text-xs space-y-1 text-gray-300">
+                    <li>• 코어 수만큼 Worker 생성</li>
+                    <li>• 처리량 10배 증가</li>
+                    <li>• 무중단 서비스 가능</li>
+                </ul>
+            </div>
+
+            <div class="bg-black/30 p-5 rounded-xl">
+                <h3 class="text-base font-bold mb-2 text-purple-400">고가용성 확보</h3>
+                <ul class="text-xs space-y-1 text-gray-300">
+                    <li>• PM2 자동 프로세스 관리</li>
+                    <li>• 단일 장애점 제거</li>
+                    <li>• 자동 재시작 및 복구</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Core Achievement Summary -->
+        <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 p-6 rounded-xl border border-blue-500/30">
+            <h3 class="text-lg font-bold text-center mb-4 text-[#8BA2FA]">클러스터 모드 핵심 성과</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                    <div class="text-2xl font-bold text-green-400 mb-1">10x</div>
+                    <div class="text-xs text-gray-300">동시 처리 능력</div>
+                    <div class="text-[10px] text-gray-500 mt-1">1K → 10K+ 세션</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-blue-400 mb-1">100%</div>
+                    <div class="text-xs text-gray-300">Race Condition</div>
+                    <div class="text-[10px] text-gray-500 mt-1">Redis SET NX</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-purple-400 mb-1">N-Core</div>
+                    <div class="text-xs text-gray-300">CPU 완전 활용</div>
+                    <div class="text-[10px] text-gray-500 mt-1">모든 코어 사용</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-red-400 mb-1">HA</div>
+                    <div class="text-xs text-gray-300">고가용성 확보</div>
+                    <div class="text-[10px] text-gray-500 mt-1">무중단 서비스</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page 4: Achievement 1 -->
+<div class="page p-10 md:px-16 md:py-6">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-[#8BA2FA] mb-8 tracking-wider">핵심 성과</h2>
+
+        <div class="mb-2">
+            <h3 class="text-2xl font-bold mb-8">1. 확장성 10배 개선</h3>
+
+            <div class="bg-black/30 p-6 rounded-xl mb-5  border-red-500">
+                <span class="inline-block px-4 py-1 rounded-full bg-red-100 text-red-500 text-sm font-bold mb-4">문제</span>
+                <div class="text-sm leading-relaxed">
+                    서버에서 모든 세션의 타이머를 관리 => 세션 1000개
+                    이상 생성시 메모리 50mb, cpu 5~10% 사용.
+                    확장성 한계 도달.
+                </div>
+            </div>
+
+            <div class="bg-black/30 p-6 rounded-xl mb-5   ">
+                <span class="inline-block px-4 py-1 rounded-full bg-blue-100 text-[#8BA2FA] text-sm font-bold mb-4">해결</span>
+                <div class="text-sm leading-relaxed">
+                    타이머 관리를 클라이언트로 이동.
+                    서버는 제한시간과 시작 시간만 전송하고, 클라이언트가
+                    직접 카운트다운 및 종료 처리.
+                </div>
+            </div>
+
+            <div class="bg-black/30 p-6 rounded-xl  border-emerald-500">
+                <span class="inline-block px-4 py-1 rounded-full bg-emerald-100 text-emerald-500 text-sm font-bold mb-4">결과</span>
+                <div class="text-sm leading-relaxed">
+                    <ul class="list-none space-y-1 mt-2">
+                        <li class="pl-5 before:content-['→_'] before:text-[#8BA2FA] before:font-bold before:-ml-5 before:mr-1">서버 메모리, CPU 사용률 99% 감소</li>
+                        <li class="pl-5 before:content-['→_'] before:text-[#8BA2FA] before:font-bold before:-ml-5 before:mr-1">동시 처리 가능 세션 1000개 → 10000개+ (10배)</li>
+                        <li class="pl-5 before:content-['→_'] before:text-[#8BA2FA] before:font-bold before:-ml-5 before:mr-1">재접속 시에도 정확한 게임 상태 복원</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page 4: Achievement 2 -->
+<div class="page min-h-screen p-10 md:px-16 md:py-6">
+    <div class="max-w-4xl mx-auto">
+        <div>
+            <h3 class="text-2xl font-bold mb-8">2. 동시 요청 처리 속도 10배 개선</h3>
+
+            <div class="bg-black/30 p-6 rounded-xl mb-5  border-red-500">
+                <span class="inline-block px-4 py-1 rounded-full bg-red-100 text-red-500 text-sm font-bold mb-4">문제</span>
+                <div class="text-sm leading-relaxed">
+                    실시간 퀴즈에서 동시 다발적 정답 제출 시 MongoDB
+                    기반 스코어 업데이트에 4~5초 딜레이 발생.
+                    실시간성이 중요한 서비스에서 사용자 경험 저하.
+                </div>
+            </div>
+
+            <div class="bg-black/30 p-6 rounded-xl mb-5   ">
+                <span class="inline-block px-4 py-1 rounded-full bg-blue-100 text-[#8BA2FA] text-sm font-bold mb-4">해결</span>
+                <div class="text-sm leading-relaxed">
+                    Redis 인메모리 DB로 스코어 관리 시스템 전환.
+                    SET NX 원자적 연산으로 첫 정답자 판정 및 동시성
+                    제어까지 해결.
+                </div>
+            </div>
+
+            <div class="bg-black/30 p-6 rounded-xl  border-emerald-500">
+                <span class="inline-block px-4 py-1 rounded-full bg-emerald-100 text-emerald-500 text-sm font-bold mb-4">결과</span>
+                <div class="text-sm leading-relaxed">
+                    <ul class="list-none space-y-1 mt-2">
+                        <li class="pl-5 before:content-['→_'] before:text-[#8BA2FA] before:font-bold before:-ml-5 before:mr-1">응답 속도 10배 개선 (4~5초 → 0.4초 이내)</li>
+                        <li class="pl-5 before:content-['→_'] before:text-[#8BA2FA] before:font-bold before:-ml-5 before:mr-1">첫 정답자 판정 Race Condition 해결</li>
+                        <li class="pl-5 before:content-['→_'] before:text-[#8BA2FA] before:font-bold before:-ml-5 before:mr-1">실시간 스코어 업데이트로 사용자 경험 개선</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page 5: Lessons & Others -->
+<div class="page min-h-screen p-10 md:px-16 md:py-6">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-[#8BA2FA] mb-8 tracking-wider">배운점</h2>
+
+        <div class="mb-10">
+            <h4 class="text-lg font-bold mb-4">1. 부하 분산의 중요성</h4>
+            <div class="text-sm leading-relaxed pl-5 border-l-2  ">
+                서버가 모든 것을 처리할 필요는 없다.
+                클라이언트가 할 수 있는 것은 클라이언트에게 맡기면
+                서버 부담을 크게 줄일 수 있다.
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h4 class="text-lg font-bold mb-4">2. 확장성을 고려한 초기 설계</h4>
+            <div class="text-sm leading-relaxed pl-5 border-l-2  ">
+                초기부터 확장성을 고려했다면 리팩토링 비용을 줄일
+                수 있었다. "일단 돌아가게"보다 "나중에도 견딜 수 있게"
+                설계하는 게 중요.
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h4 class="text-lg font-bold mb-4">3. 트레이드오프 이해</h4>
+            <div class="text-sm leading-relaxed pl-5 border-l-2  ">
+                클라이언트 측 타이머는 조작 가능성이 있지만,
+                서버 측 검증으로 보완 가능. 완벽한 해결책은 없고
+                상황에 맞는 최선의 선택이 있을 뿐.
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h4 class="text-lg font-bold mb-4">4. 동시성 문제는 생각보다 복잡</h4>
+            <div class="text-sm leading-relaxed pl-5 border-l-2  ">
+                단순히 if 문으로 체크하는 게 안전하다고 생각했지만,
+                실제로는 Race Condition이 발생. 멀티플레이어
+                서비스에서 동시성은 항상 고려해야 할 핵심 문제.
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h4 class="text-lg font-bold mb-4">5. Edge Case 대비</h4>
+            <div class="text-sm leading-relaxed pl-5 border-l-2  ">
+                재접속, 네트워크 지연, 시간 조작 등 다양한 상황을
+                고려해야 완성도 높은 서비스를 만들 수 있다.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

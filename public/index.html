@@ -1,0 +1,322 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO 메타 태그 -->
+    <title>PLAYCODE.GG (플레이코드지지, 플코지지) - 실시간 퀴즈 게임</title>
+    <meta name="description" content="PLAYCODE.GG (플레이코드지지, 플코지지)에서 친구들과 실시간으로 지식 대결을 펼치세요. 초대 코드로 함께 참여하고 다양한 주제의 퀴즈로 경쟁할 수 있습니다.">
+    <meta name="keywords" content="플코지지, 플레이코드지지, PLAYCODE.GG, PLAYCODE, 퀴즈 게임, 지식 퀴즈, 멀티플레이어 퀴즈, 친구와 퀴즈, 실시간 퀴즈, 온라인 퀴즈 배틀, 퀴즈 대결">
+    <meta name="author" content="PLAYCODE.GG">
+    <meta name="robots" content="index, follow">
+    <meta name="naver-site-verification" content="36f704153a93eb40267146fba5f61f5d2a382956" />
+    <link rel="canonical" href="https://playcode.gg/">
+
+    <!-- Open Graph / 카카오톡, 페이스북 등 SNS 공유 시 미리보기 -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://playcode.gg/">
+    <meta property="og:title" content="PLAYCODE.GG (플레이코드지지, 플코지지) - 실시간 퀴즈 게임">
+    <meta property="og:description" content="PLAYCODE.GG (플레이코드지지, 플코지지)에서 친구들과 실시간으로 지식 대결을 펼치세요. 초대 코드로 함께 참여하고 다양한 주제의 퀴즈로 경쟁할 수 있습니다.">
+    <meta property="og:image" content="https://playcode.gg/images/Logo.png">
+    <meta property="og:site_name" content="PLAYCODE.GG">
+
+    <!-- Twitter / X 공유 시 미리보기 -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://playcode.gg/">
+    <meta property="twitter:title" content="PLAYCODE.GG (플레이코드지지, 플코지지) - 실시간 퀴즈 게임">
+    <meta property="twitter:description" content="PLAYCODE.GG (플레이코드지지, 플코지지)에서 친구들과 실시간으로 지식 대결을 펼치세요. 초대 코드로 함께 참여하고 다양한 주제의 퀴즈로 경쟁할 수 있습니다.">
+    <meta property="twitter:image" content="https://playcode.gg/images/Logo.png">
+
+    <!-- 파비콘 설정 -->
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="shortcut icon" href="/images/favicon.png">
+
+    <!-- 구조화된 데이터 (JSON-LD) - 구글 검색 로고 표시용 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "PLAYCODE.GG",
+      "alternateName": ["플레이코드지지", "플코지지"],
+      "url": "https://playcode.gg/",
+      "description": "PLAYCODE.GG (플레이코드지지, 플코지지)에서 친구들과 실시간으로 지식 대결을 펼치세요.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "PLAYCODE.GG",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://playcode.gg/images/Logo.png",
+          "width": 512,
+          "height": 512
+        }
+      }
+    }
+    </script>
+
+    <!-- Tailwind CSS (빌드된 버전) -->
+    <link rel="stylesheet" href="/css/tailwind.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+
+    <!-- 광고 스크립트 -->
+    <script src="https://ads-partners.coupang.com/g.js"></script>
+    <script async type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js"></script>
+</head>
+<body class="bg-[#222230]">
+    <!-- 상단바가 여기에 자동으로 삽입됩니다 -->
+
+    <!-- 3단 레이아웃 래퍼 (광고 + 콘텐츠 + 광고) -->
+    <div class="flex justify-center gap-4 xl:gap-6 px-2 xl:px-4">
+        <!-- 좌측 광고 영역 (xl 이상에서만 표시) -->
+        <aside class="hidden xl:flex xl:w-[160px] xl:justify-center sticky top-20 self-start">
+            <div class="w-[160px] h-[600px]">
+                <script>
+                    new PartnersCoupang.G({"id":932761,"template":"carousel","trackingCode":"AF8328090","width":"160","height":"600","tsource":""});
+                </script>
+            </div>
+        </aside>
+
+        <!-- 중앙 콘텐츠 -->
+        <main class="w-full xl:w-[1080px] py-8">
+            <!-- 메인 컨텐츠 -->
+            <div class="px-2 sm:px-0">
+                <div class="text-center text-[14px]">
+                    <div class="max-w-[1080px] mx-auto sm:px-0 px-4">
+                        <!-- 데스크톱 레이아웃 (lg 이상) -->
+                <div class="hidden lg:flex flex-col lg:flex-row gap-4 lg:gap-6 items-center justify-between">
+                    <div class="flex justify-center h-[38px]">
+                        <div class="relative">
+                            <button
+                                id="sortButton"
+                                class="bg-[#8BA2FA] hover:bg-[#617DE9] text-white px-4 py-2 rounded-lg transition-colors font-medium shadow-lg flex items-center gap-2"
+                                onclick="toggleSortDropdown()"
+                            >
+                                <svg class="w-5 h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="sortDropdown" class="hidden absolute top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 min-w-[120px]">
+                                <button onclick="selectSort('popular')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg transition-colors">인기순</button>
+                                <button onclick="selectSort('latest')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">최신순</button>
+                                <button onclick="selectSort('recommended')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg transition-colors">추천순</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 w-max">
+                        <div class="flex h-[38px]">
+                            <input 
+                                type="text" 
+                                id="searchInput"
+                                placeholder="검색어를 입력해 주세요."
+                                class="flex-1 px-4 py-2 rounded-l-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                            <button 
+                                id="searchBtn"
+                                class="bg-[#8BA2FA] hover:bg-[#617DE9] text-white px-4 py-2 rounded-r-lg transition-colors"
+                            >
+                                검색
+                            </button>
+                        </div>
+                    </div>
+    
+                    <!-- 초대 코드 입력 섹션 -->
+                    <div id="inviteSection" class="flex h-[38px]">
+                        <input 
+                            type="text"
+                            id="inviteInput" 
+                            placeholder="초대 코드 입력"
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                        <button 
+                            id="joinBtn"
+                            class="bg-[#8BA2FA] hover:bg-[#617DE9] text-white px-4 py-2 rounded-r-lg transition-colors"
+                        >
+                            입장
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 모바일/태블릿 레이아웃 (lg 미만) -->
+                <div class="lg:hidden space-y-4">
+                    <!-- 첫 번째 줄: 검색창 + 정렬 드롭다운 -->
+                    <div class="flex gap-3 h-[38px]">
+                        <!-- 검색창 (더 넓게) -->
+                        <div class="flex-1 flex min-w-0">
+                            <input 
+                                type="text" 
+                                id="searchInputMobile"
+                                placeholder="검색어를 입력해 주세요."
+                                data-placeholder-full="검색어를 입력해 주세요."
+                                data-placeholder-short="검색"
+                                class="flex-1 px-3 py-2 rounded-l-lg border text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0"
+                            >
+                            <button 
+                                id="searchBtnMobile"
+                                class="bg-[#8BA2FA] hover:bg-[#617DE9] text-white px-3 py-2 rounded-r-lg transition-colors text-sm whitespace-nowrap"
+                            >
+                                검색
+                            </button>
+                        </div>
+                        
+                        <!-- 정렬 드롭다운 -->
+                        <div class="relative">
+                            <button
+                                id="sortButtonMobile"
+                                class="bg-[#8BA2FA] hover:bg-[#617DE9] h-full text-white px-3 py-2 rounded-lg transition-colors font-medium shadow-lg flex items-center"
+                                onclick="toggleSortDropdownMobile()"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="sortDropdownMobile" class="hidden absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-lg shadow-xl z-50 min-w-[120px]">
+                                <button onclick="selectSortMobile('popular')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg transition-colors">인기순</button>
+                                <button onclick="selectSortMobile('latest')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors">최신순</button>
+                                <button onclick="selectSortMobile('recommended')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg transition-colors">추천순</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 두 번째 줄: 초대 코드 입력 -->
+                    <div id="inviteSectionMobile">
+                        <div class="flex h-[38px]">
+                            <input 
+                                type="text"
+                                id="inviteInputMobile" 
+                                placeholder="초대 코드를 입력하세요"
+                                class="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0"
+                            >
+                            <button 
+                                id="joinBtnMobile"
+                                class="bg-[#8BA2FA] hover:bg-[#617DE9] text-white px-4 py-2 rounded-r-lg transition-colors text-sm whitespace-nowrap flex-shrink-0"
+                            >
+                                입장
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 퀴즈 목록 섹션 -->
+            <div id="quizListSection" class="max-w-[1080px] mx-auto sm:px-0 px-4 py-8">
+                <!-- 퀴즈 그리드 -->
+                <div id="quizList" class="grid grid-auto-fit gap-6">
+                    <!-- 로딩 상태 -->
+                    <div class="text-center py-8 col-span-full">
+                        <div class="inline-flex items-center space-x-2 text-gray-300">
+                            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                            <span>퀴즈 목록을 불러오는 중...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 광고 영역 (xl 이상에서만 표시) -->
+        <aside class="hidden xl:flex xl:w-[160px] xl:justify-center sticky top-20 self-start">
+            <!-- 카카오 애드핏 광고 -->
+            <ins class="kakao_ad_area"
+                 data-ad-unit="DAN-gnEAmPkmPaZvFnB6"
+                 data-ad-width="160"
+                 data-ad-height="600">
+            </ins>
+        </aside>
+    </div>
+    <!-- 3단 레이아웃 래퍼 끝 -->
+
+    <!-- 퀴즈 모달 -->
+    <div id="quizModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="flex items-center justify-center min-h-full">
+            <!-- 모달 컨테이너 -->
+            <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-95 opacity-0" id="quizModalContent">
+                
+                <!-- 모달 헤더 (닫기 버튼) -->
+                <div class="absolute top-4 right-4 z-10">
+                    <button onclick="closeQuizModal()" class="bg-black bg-opacity-20 hover:bg-opacity-40 text-white rounded-full p-2 transition-all duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+    
+                <!-- 퀴즈 썸네일 이미지 -->
+                <div class="relative h-64 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500">
+                    <img id="modalThumbnail" src="" alt="" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+
+                    <!-- 플레이 횟수 배지 -->
+                    <div id="modalPlayBadge" class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        0회 플레이
+                    </div>
+
+                    <!-- 공유 버튼 -->
+                    <button
+                        id="shareQuizBtn"
+                        onclick="shareQuiz()"
+                        class="absolute bottom-4 right-16 bg-white bg-opacity-40 hover:bg-green-500 text-white rounded-full p-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110"
+                        title="이 퀴즈 공유하기"
+                    >
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
+                        </svg>
+                    </button>
+
+                    <!-- 신고 아이콘 버튼 (로그인한 사용자만) -->
+                    <button
+                        id="reportQuizIconBtn"
+                        onclick="reportQuiz()"
+                        class="absolute bottom-4 right-4 bg-white bg-opacity-40 hover:bg-red-500 text-white rounded-full p-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110"
+                        title="이 퀴즈 신고하기"
+                    >
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+    
+                <!-- 모달 콘텐츠 -->
+                <div class="p-6 space-y-6 max-h-[calc(90vh-16rem)] overflow-y-auto">
+                    <!-- 퀴즈 제목 -->
+                    <div>
+                        <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-2">퀴즈 제목</h2>
+                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                            <span id="modalCreatedDate">생성일</span>
+                        </div>
+                    </div>
+    
+                    <!-- 퀴즈 설명 -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">퀴즈 소개</h3>
+                        <p id="modalDescription" class="text-gray-600 leading-relaxed">
+                            퀴즈 설명이 여기에 표시됩니다.
+                        </p>
+                    </div>
+    
+                    <!-- 게임 시작 버튼 -->
+                    <div class="flex flex-col space-y-3">
+                        <button
+                            id="createSessionBtn"
+                            onclick="createGameSession()"
+                            class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                        >
+                            게임 세션 만들기
+                        </button>
+
+                        <p class="text-center text-sm text-gray-500">
+                            세션을 생성하면 다른 플레이어들이 참여할 수 있는 초대 코드가 생성됩니다
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 파일 로드 -->
+    <script type="module" src="/js/quiz-init-modal.js"></script>
+    <script type="module" src="/js/main.js"></script>
+</body>
+</html>

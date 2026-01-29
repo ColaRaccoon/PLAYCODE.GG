@@ -1,0 +1,193 @@
+/* public/css/minimal.css - 정말 필요한 것들만 */
+
+/* 1. 구분선 (Tailwind로 하기 복잡한 pseudo-element) */
+.divider {
+    position: relative;
+    text-align: center;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgb(75 85 99); /* gray-600 */
+}
+
+.divider span {
+    padding: 0 1rem;
+}
+
+/* 2. 소셜 로그인 브랜드 색상 (Tailwind에 없는 정확한 브랜드 컬러) */
+.btn-naver {
+    background-color: #03C75A;
+    color: white;
+}
+
+.btn-naver:hover {
+    background-color: #02b351;
+}
+
+.btn-google {
+    background-color: #db4437;
+    color: white;
+}
+
+.btn-google:hover {
+    background-color: #c23321;
+}
+
+.btn-kakao {
+    background-color: #FEE500;
+    color: #000000;
+}
+
+.btn-kakao:hover {
+    background-color: #FFDB00;
+}
+
+/* 3. 로딩 스피너 (keyframe 애니메이션) */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-track-gray-700::-webkit-scrollbar-track {
+    background: rgb(55 65 81);
+    border-radius: 3px;
+}
+
+.scrollbar-thumb-gray-500::-webkit-scrollbar-thumb {
+    background: rgb(107 114 128);
+    border-radius: 3px;
+}
+
+.scrollbar-thumb-gray-500::-webkit-scrollbar-thumb:hover {
+    background: rgb(156 163 175);
+}
+
+/* 5. 선택지 버튼 호버 효과 (복잡한 애니메이션) */
+.choice-hover-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.choice-hover-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.choice-hover-effect:hover::before {
+    left: 100%;
+}
+
+/* 6. 알림 스타일 (Tailwind로 복잡한 조합) */
+.alert-success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgb(34 197 94);
+    color: rgb(134 239 172);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgb(239 68 68);
+    color: rgb(252 165 165);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgb(245 158 11);
+    color: rgb(253 230 138);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+/* 아바타 이미지 로드 실패 처리 */
+.player-avatar img {
+    transition: opacity 0.3s ease;
+}
+
+.player-avatar img:hover {
+    opacity: 0.9;
+}
+
+/* 프로필 이미지 로딩 애니메이션 */
+.avatar-loading {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* 스코어보드 & 사이드바 전용 얇은 스크롤바 (트랙 없음) */
+#scoreboardWrapper::-webkit-scrollbar,
+#questionSidebar::-webkit-scrollbar {
+    height: 2px;  /* 가로 스크롤 (스코어보드) */
+    width: 4px;   /* 세로 스크롤 (사이드바) */
+}
+
+#scoreboardWrapper::-webkit-scrollbar-track,
+#questionSidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#scoreboardWrapper::-webkit-scrollbar-thumb,
+#questionSidebar::-webkit-scrollbar-thumb {
+    background: rgb(107 114 128);
+    border-radius: 2px;
+}
+
+#scoreboardWrapper::-webkit-scrollbar-thumb:hover,
+#questionSidebar::-webkit-scrollbar-thumb:hover {
+    background: rgb(156 163 175);
+}
+
+/* Firefox 지원 */
+#scoreboardWrapper,
+#questionSidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(107 114 128) transparent;
+}
+
+/* 모바일 전용 광고 (스마트폰만) */
+.mobile-only-ad {
+    display: none; /* 기본적으로 숨김 */
+}
+
+/* 스마트폰에서만 표시 (480px 이하) */
+@media (max-width: 480px) {
+    .mobile-only-ad {
+        display: block;
+    }
+}

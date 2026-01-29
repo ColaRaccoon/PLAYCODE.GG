@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 페이지를 찾을 수 없습니다 | PLAYCODE.GG</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body class="bg-[#222230] text-white min-h-screen flex items-center justify-center">
+    <div class="max-w-2xl mx-auto px-4 py-8 text-center">
+        <div class="bg-[#2d2d3d] rounded-2xl p-12 shadow-2xl border border-gray-600">
+            <!-- 404 아이콘 -->
+            <div class="mb-8">
+                <svg class="w-32 h-32 mx-auto text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+
+            <!-- 에러 메시지 -->
+            <h1 class="text-6xl font-bold text-white mb-4">404</h1>
+            <h2 class="text-2xl font-semibold text-gray-300 mb-4">페이지를 찾을 수 없습니다</h2>
+            <p class="text-gray-400 mb-8">
+                요청하신 페이지가 존재하지 않거나 이동되었습니다.<br>
+                URL을 다시 확인해주세요.
+            </p>
+
+            <!-- 액션 버튼들 -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                    onclick="window.history.back()"
+                    class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                    ← 이전 페이지
+                </button>
+                <button
+                    onclick="window.location.href='/'"
+                    class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                    메인으로
+                </button>
+            </div>
+
+            <!-- 도움말 링크 -->
+            <div class="mt-8 pt-6 border-t border-gray-600">
+                <p class="text-gray-400 text-sm mb-3">도움이 필요하신가요?</p>
+                <div class="flex flex-wrap justify-center gap-4 text-sm">
+                    <a href="/contact.html" class="text-blue-400 hover:text-blue-300 transition-colors">문의하기</a>
+                    <span class="text-gray-600">|</span>
+                    <a href="/terms.html" class="text-blue-400 hover:text-blue-300 transition-colors">이용약관</a>
+                    <span class="text-gray-600">|</span>
+                    <a href="/privacy-policy.html" class="text-blue-400 hover:text-blue-300 transition-colors">개인정보 처리방침</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="fixed bottom-0 left-0 right-0 pb-4 text-center text-gray-500 text-xs">
+        <p>© 2025 PLAYCODE.GG. All rights reserved.</p>
+    </footer>
+</body>
+</html>

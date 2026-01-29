@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playcode-app
+  namespace: playcode
+  labels:
+    app: playcode-app
+spec:
+  # EC2 단일 노드에서는 1-2개 권장
+  replicas: 2
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # 업데이트 시 추가 생성할 최대 Pod 수
+      maxUnavailable: 1  # 업데이트 시 사용 불가능한 최대 Pod 수
+
+  selector:
+    matchLabels:
+      app: playcode-app
+
+  template:
+    metadata:
+      labels:
+        app: playcode-app
+    spec:
+      containers:
+      - name: playcode-app
+        # ========================================
+        # 로컬 Kubernetes 테스트용 (Docker Desktop)
+        # ========================================
+        # image: playcode-app:latest
+        # imagePullPolicy: Never  # 로컬 이미지 사용
+
+        # ========================================
+        # EC2 배포용
+        # ========================================
+        image: 925216255375.dkr.ecr.ap-northeast-2.amazonaws.com/playcode-app:latest
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+
+        # ConfigMap에서 환경 변수 가져오기
+        envFrom:
+        - configMapRef:
+            name: playcode-config
+        - secretRef:
+            name: playcode-secrets
+
+        # 리소스 제한 (EC2 t3.medium 기준: 2 vCPU, 4GB RAM)
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "768Mi"
+            cpu: "500m"
+
+        # 헬스체크 (애플리케이션에 /health 엔드포인트 필요)
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+
+        # 로그 볼륨 마운트 (선택사항)
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+
+      # ECR 인증을 위한 Secret
+      imagePullSecrets:
+      - name: ecr-secret
+
+      volumes:
+      - name: logs
+        emptyDir: {}  # Pod 재시작 시 삭제됨. 영구 저장 필요 시 PVC 사용
+
+---
+# Horizontal Pod Autoscaler (선택사항, 자동 스케일링)
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: playcode-app-hpa
+  namespace: playcode
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: playcode-app
+  minReplicas: 2
+  maxReplicas: 4  # EC2 단일 노드에서는 제한적
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70  # CPU 70% 초과 시 스케일 아웃
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

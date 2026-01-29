@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLAYCODE.GG 회원가입</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body class="bg-[#222230] text-white min-h-screen">
+    <div class="max-w-md mx-auto pt-12 px-4">
+        <div class="bg-[#2d2d3d] rounded-2xl p-8 shadow-2xl border border-gray-600">
+            
+            <a href="/" 
+               class="block w-full text-center bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-lg mb-6 transition-colors duration-300 no-underline">
+                ← 메인페이지
+            </a>
+            
+            <h1 class="text-2xl font-semibold text-center text-white mb-4">회원가입</h1>
+
+            <!-- 안내 메시지 -->
+            <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-6">
+                <p class="text-sm text-blue-200 text-center">
+                    현재 소셜 로그인을 통한 간편 가입만 지원하고 있습니다.
+                </p>
+            </div>
+
+            <div id="alertContainer" class="mb-4"></div>
+
+            <!-- 일반 회원가입 폼 - SES 프로덕션 승인 후 재활성화 -->
+            <form id="signupForm" class="space-y-4 mb-8" style="display: none;">
+                <input 
+                    type="text" 
+                    id="nickname" 
+                    name="nickname" 
+                    placeholder="닉네임 (고유한 사용자명)" 
+                    required
+                    maxlength="11"
+                    class="w-full px-4 py-3 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all duration-300 text-base"
+                >
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="이름 (실명)" 
+                    required
+                    maxlength="20"
+                    class="w-full px-4 py-3 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all duration-300 text-base"
+                >
+                <div class="space-y-2">
+                    <div class="flex space-x-2">
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="이메일"
+                            required
+                            class="flex-1 px-4 py-3 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all duration-300 text-base"
+                        >
+                        <button
+                            type="button"
+                            id="sendVerificationBtn"
+                            class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors duration-300 whitespace-nowrap"
+                        >
+                            인증코드 발송
+                        </button>
+                    </div>
+
+                    <!-- 인증 코드 입력란 (처음에는 숨김) -->
+                    <div id="verificationCodeSection" class="hidden space-y-2">
+                        <div class="flex space-x-2">
+                            <input
+                                type="text"
+                                id="verificationCode"
+                                placeholder="인증 코드 6자리"
+                                maxlength="6"
+                                class="flex-1 px-4 py-3 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all duration-300 text-base"
+                            >
+                            <button
+                                type="button"
+                                id="verifyCodeBtn"
+                                class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors duration-300 whitespace-nowrap"
+                            >
+                                인증 확인
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-400" id="verificationTimer"></p>
+                    </div>
+
+                    <!-- 인증 완료 표시 -->
+                    <div id="verificationSuccess" class="hidden">
+                        <p class="text-sm text-green-400 flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            이메일 인증 완료
+                        </p>
+                    </div>
+                </div>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="비밀번호 (6~20자)"
+                    required
+                    maxlength="20"
+                    class="w-full px-4 py-3 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all duration-300 text-base"
+                >
+
+                <!-- 약관 동의 -->
+                <div class="space-y-3 py-2">
+                    <div class="flex items-start space-x-3">
+                        <input
+                            type="checkbox"
+                            id="termsAgree"
+                            name="termsAgree"
+                            class="mt-1 w-4 h-4 text-blue-600 bg-[#3a3a4a] border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                            required
+                        >
+                        <label for="termsAgree" class="text-sm text-gray-300">
+                            <span class="text-red-400">[필수]</span>
+                            <a href="/terms.html" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                                서비스 이용약관
+                            </a>
+                            에 동의합니다
+                        </label>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <input
+                            type="checkbox"
+                            id="privacyAgree"
+                            name="privacyAgree"
+                            class="mt-1 w-4 h-4 text-blue-600 bg-[#3a3a4a] border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                            required
+                        >
+                        <label for="privacyAgree" class="text-sm text-gray-300">
+                            <span class="text-red-400">[필수]</span>
+                            <a href="/privacy-policy.html" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                                개인정보 처리방침
+                            </a>
+                            에 동의합니다
+                        </label>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-gradient-to-r from-[#8BA2FA] to-blue-500 hover:from-[#8BA2FA] hover:to-[#8BA2FA] text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                >
+                    가입하기
+                </button>
+            </form>
+
+            <!-- 구분선 제거 (소셜 로그인만 표시) -->
+
+            <div class="space-y-3 social-login-group">
+                <a href="/auth/naver"
+                   class="btn-naver block w-full text-center py-3 px-4 rounded-lg font-medium transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl no-underline">
+                    네이버로 가입하기
+                </a>
+                <a href="/auth/google"
+                   class="btn-google block w-full text-center py-3 px-4 rounded-lg font-medium transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl no-underline">
+                    구글로 가입하기
+                </a>
+            </div>
+
+            <div class="text-center mt-6">
+                <a href="/login"
+                   class="text-gray-400 hover:text-green-400 transition-colors duration-300 no-underline">
+                    이미 계정이 있으신가요? 로그인
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="mt-12 pb-8 text-center text-gray-400 text-sm">
+        <div class="space-x-4">
+            <a href="/terms.html" class="hover:text-white transition-colors no-underline">서비스 이용약관</a>
+            <span>|</span>
+            <a href="/privacy-policy.html" class="hover:text-white transition-colors no-underline">개인정보 처리방침</a>
+            <span>|</span>
+            <a href="/" class="hover:text-white transition-colors no-underline">PLAYCODE.GG</a>
+        </div>
+        <p class="mt-2">© 2025 PLAYCODE.GG. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/signup.js"></script>
+</body>
+</html>

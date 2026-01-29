@@ -1,0 +1,20 @@
+# robots.txt for playcode.gg
+
+User-agent: *
+Allow: /
+
+# 크롤링 차단할 페이지
+Disallow: /admin/
+Disallow: /admin-*
+Disallow: /portfolio/
+Disallow: /my-page.html
+Disallow: /edit-profile.html
+Disallow: /quiz-edit.html
+Disallow: /quiz-my-list.html
+Disallow: /session-expired.html
+Disallow: /naver-nickname-setup.html
+Disallow: /google-nickname-setup.html
+Disallow: /coupang-ad-*
+
+# 사이트맵 위치
+Sitemap: https://playcode.gg/sitemap.xml

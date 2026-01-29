@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>퀴즈 목록</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/common.css">
+</head>
+<body>
+  <button onclick="location.href='/'">메인으로</button>
+  <h1>전체 퀴즈 목록</h1>
+  <ul id="quizList"></ul>
+    
+  <script>
+    // Helper function to handle token refresh and retry
+    async function fetchWithAuth(url, options = {}) {
+        options.credentials = 'include'; // Ensure cookies are sent
+
+        let response = await fetch(url, options);
+
+        if (response.status === 401) {
+            // Try to refresh token
+            const refreshResponse = await fetch('/auth/refresh', {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            if (refreshResponse.ok) {
+                // Token refreshed, retry original request
+                response = await fetch(url, options);
+            } else {
+                // Refresh failed, redirect to login
+                alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+                window.location.href = '/login';
+                return; // Prevent further execution
+            }
+        }
+        return response;
+    }
+
+    fetchWithAuth('/quiz/list') // Use the new helper function
+      .then(res => res.json())
+      .then(data => {
+        const ul = document.getElementById('quizList');
+        data.forEach(quiz => {
+          const li = document.createElement('li');
+          li.innerHTML = `<a href="/quiz/play?id=${quiz._id}">
+                            <strong>${quiz.title}</strong>
+                          </a> - ${quiz.description || ''}`;
+          ul.appendChild(li);
+        });
+      })
+      .catch(err => {
+        console.error('퀴즈 목록 불러오기 실패:', err);
+        alert('퀴즈를 불러오는 중 오류 발생');
+      });
+  </script>
+</body>
+</html>

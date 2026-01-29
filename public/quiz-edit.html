@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLAYCODE.GG 퀴즈 편집</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/css/common.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 광고 스크립트 (효율적인 방식: head에서 한 번만 로드) -->
+    <script src="https://ads-partners.coupang.com/g.js"></script>
+    <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+
+    <style>
+        .question-type-btn {
+            transition: all 0.3s ease;
+        }
+        .question-type-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-[#222230] min-h-screen">
+
+    <!-- 3단 레이아웃 래퍼 (광고 + 콘텐츠 + 광고) -->
+    <div class="flex justify-center gap-4 xl:gap-6 px-2 xl:px-4">
+        <!-- 좌측 광고 영역 (xl 이상에서만 표시) -->
+        <aside class="hidden xl:flex xl:w-[160px] xl:justify-center sticky top-20 self-start">
+            <div class="w-[160px] h-[600px]">
+                <script>
+                    new PartnersCoupang.G({"id":932761,"template":"carousel","trackingCode":"AF8328090","width":"160","height":"600","tsource":""});
+                </script>
+            </div>
+        </aside>
+
+        <!-- 중앙 콘텐츠 -->
+        <main class="w-full xl:w-[1080px] py-8 pt-12">
+            <div class="sm:px-0 px-4">
+        
+        <!-- 상단 헤더 -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.location.href='/quiz/my-list'" 
+                            class="text-gray-400 hover:text-white transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white" id="quizTitle">퀴즈 편집</h1>
+                        <p class="text-sm text-gray-400 mt-1" id="questionCount">0개 문제</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2 bg-gray-800/50 rounded-lg p-1 border border-gray-700">
+                    <button onclick="switchView('overview')" 
+                            id="overviewBtn"
+                            class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 bg-blue-500 text-white">
+                        전체보기
+                    </button>
+                    <button onclick="switchView('edit')" 
+                            id="editBtn"
+                            class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 text-gray-300 hover:text-white">
+                        문제편집
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 전체보기 모드 -->
+        <div id="overviewView" class="space-y-6">
+            <div class="flex justify-between items-center">
+
+                <div class="mt-4 bg-gray-800/50 rounded-xl p-4 border border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="font-medium text-white">문제 랜덤 순서</p>
+                            <p class="text-sm text-gray-400 mt-1">매 게임마다 문제 순서가 무작위로 섞입니다</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span id="randomOrderSaveFeedback" class="text-sm text-green-400 transition-opacity duration-300 opacity-0">저장됨!</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="isRandomOrder" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="createNewQuestion()" 
+                        class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>새 문제 추가</span>
+                </button>
+            </div>
+
+            <div id="questionsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+
+            <div id="emptyState" class="hidden text-center py-20">
+                <div class="bg-gray-800/50 rounded-2xl p-12 max-w-md mx-auto border border-gray-700">
+                    <svg class="w-20 h-20 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <h3 class="text-2xl font-bold text-gray-300 mb-3">아직 문제가 없습니다</h3>
+                    <p class="text-gray-400 mb-6">첫 문제를 만들어보세요!</p>
+                    <button onclick="createNewQuestion()" 
+                            class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
+                        문제 만들기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 문제편집 모드 -->
+        <div id="editView" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- 왼쪽: 문제 목록 -->
+                <div class="lg:col-span-1">
+                    <div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700 lg:sticky lg:top-24">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-white">문제 목록</h3>
+                            <button onclick="createNewQuestion()" 
+                                    class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="questionSidebar" class="space-y-3 max-h-[600px] overflow-y-auto">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 문제 편집 폼 -->
+                <div class="lg:col-span-2">
+                    <div class="bg-gray-800/50 rounded-2xl p-8 border border-gray-700">
+                        <h3 class="text-xl font-bold text-white mb-6">문제 편집</h3>
+                        
+                        <div class="space-y-6">
+                            
+                            <!-- 문제 타입 선택 -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">문제 타입 선택</label>
+                                <div class="grid grid-cols-4 gap-3">
+                                    <!-- 텍스트 문제 버튼 -->
+                                    <button 
+                                        type="button"
+                                        data-question-type="text"
+                                        onclick="selectQuestionType('text')"
+                                        class="bg-blue-600 ring-2 ring-blue-400 text-white p-4 rounded-lg transition-all hover:scale-105 flex flex-col items-center gap-2"
+                                    >
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">텍스트</span>
+                                    </button>
+                                    
+                                    <!-- 이미지 문제 버튼 -->
+                                    <button 
+                                        type="button"
+                                        data-question-type="image"
+                                        onclick="selectQuestionType('image')"
+                                        class="bg-gray-700 hover:bg-gray-600 text-white p-4 rounded-lg transition-all hover:scale-105 flex flex-col items-center gap-2"
+                                    >
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">이미지</span>
+                                    </button>
+                                    
+                                    <!-- 영상 문제 버튼 -->
+                                    <button 
+                                        type="button"
+                                        data-question-type="video"
+                                        onclick="selectQuestionType('video')"
+                                        class="bg-gray-700 hover:bg-gray-600 text-white p-4 rounded-lg transition-all hover:scale-105 flex flex-col items-center gap-2"
+                                    >
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">영상</span>
+                                    </button>
+                                    
+                                    <!-- 소리 문제 버튼 -->
+                                    <button 
+                                        type="button"
+                                        data-question-type="audio"
+                                        onclick="selectQuestionType('audio')"
+                                        class="bg-gray-700 hover:bg-gray-600 text-white p-4 rounded-lg transition-all hover:scale-105 flex flex-col items-center gap-2"
+                                    >
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">소리</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 객관식 토글 -->
+                            <div class="bg-gray-700/30 rounded-xl p-4 border border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-white">객관식 문제</p>
+                                        <p class="text-sm text-gray-400 mt-1">정답 선택지가 표시됩니다</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="isMultipleChoice" onchange="toggleMultipleChoice()" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 문제 텍스트 입력 -->
+                            <div id="questionTextSection">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">문제</label>
+                                <textarea id="questionText" 
+                                          rows="3"
+                                          placeholder="문제를 입력하세요..."
+                                          maxlength="80"
+                                          class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"></textarea>
+                            </div>
+
+                            <!-- 제한 시간 -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">제한 시간 (초)</label>
+                                <input type="number" 
+                                       id="timeLimit" 
+                                       value="60"
+                                       min="5"
+                                       max="300"
+                                       class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200">
+                            </div>
+
+                            <!-- 문제 이미지 업로드 (이미지 문제에서만 표시) -->
+                            <div id="questionImageSection" class="hidden">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">문제 이미지</label>
+                                <div class="flex items-center space-x-3">
+                                    <div id="questionImageDropZone" class="flex-1 cursor-pointer">
+                                        <div class="border-2 border-dashed border-gray-600 hover:border-blue-500 rounded-lg p-6 text-center transition-colors duration-200">
+                                            <svg class="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            <p class="text-sm text-gray-400">이미지를 클릭하거나 드래그하세요</p>
+                                        </div>
+                                        <input type="file" id="questionImage" accept="image/*" class="hidden" onchange="previewImage(this, 'questionImagePreview')">
+                                    </div>
+                                </div>
+                                <div id="questionImagePreview" class="hidden mt-3">
+                                    <img src="" alt="미리보기" class="max-h-48 rounded-lg mx-auto">
+                                    <button onclick="removeImage('questionImage', 'questionImagePreview')"
+                                            class="mt-2 text-sm text-red-400 hover:text-red-300">이미지 제거</button>
+                                </div>
+                            </div>
+
+                            <!-- 유튜브 문제 편집란 (영상/소리 문제에서만 표시) -->
+                            <div id="youtubeSection" class="hidden bg-gray-700/30 rounded-xl p-6 border border-gray-700">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                        </svg>
+                                        <span class="font-semibold text-white" id="youtubeSectionTitle">유튜브 문제 편집</span>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">유튜브 URL</label>
+                                        <input type="text" 
+                                               id="youtubeUrl" 
+                                               placeholder="https://www.youtube.com/watch?v=..."
+                                               oninput="updateYoutubePreview()"
+                                               
+                                               class="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200">
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">시작 시간</label>
+                                            <input type="text" 
+                                                   id="startTime" 
+                                                   placeholder="30 또는 2:30"
+                                                   maxlength="20"
+                                                   oninput="updateYoutubePreview()"
+                                                   onblur="formatTimeOnBlur('startTime')"
+                                                   class="w-full px-3 py-2 bg-gray-900/50 border border-gray-600 rounded-lg text-white text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20">
+                                            <p class="text-xs text-gray-500 mt-1">예: 30, 2:30</p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">종료 시간</label>
+                                            <input type="text" 
+                                                   id="endTime" 
+                                                   placeholder="미지정"
+                                                   maxlength="20"
+                                                   oninput="updateYoutubePreview()"
+                                                   onblur="formatTimeOnBlur('endTime')"
+                                                   class="w-full px-3 py-2 bg-gray-900/50 border border-gray-600 rounded-lg text-white text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20">
+                                            <p class="text-xs text-gray-500 mt-1">선택사항</p>
+                                        </div>
+                                    </div>
+
+                                    <div id="youtubePreview" class="hidden">
+                                        <p class="text-xs text-gray-400 mb-2">미리보기 (편집 모드 - 조작 가능)</p>
+                                        <div class="aspect-video bg-black rounded-lg overflow-hidden mb-2">
+                                            <iframe id="youtubeIframe" 
+                                                    width="100%" 
+                                                    height="100%" 
+                                                    frameborder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 정답 입력 -->
+                            <div id="answerTextSection">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">정답 ( 정답 채팅은 띄어쓰기를 무시합니다 )</label>
+                                <div class="flex space-x-2">
+                                    <input type="text"
+                                           id="answerInput"
+                                           placeholder="정답을 입력하고 Enter"
+                                           maxlength="30"
+                                           onkeypress="if(event.key==='Enter'){event.preventDefault();addAnswer();}"
+                                           class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-200">
+                                    <button onclick="addAnswer()" 
+                                            class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                                        추가
+                                    </button>
+                                </div>
+                                <div id="answersList" class="flex flex-wrap gap-2 mt-3">
+                                </div>
+                            </div>
+
+                            <!-- 힌트 설정 (선택) -->
+                            <div id="hintSection" class="bg-gray-700/30 rounded-xl p-4 border border-gray-600">
+                                <div class="flex items-center space-x-2 mb-3">
+                                    <label class="text-sm font-medium text-gray-300">힌트 설정 (선택)</label>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-3">
+                                    <div>
+                                        <input type="text"
+                                               id="hintInput"
+                                               placeholder="힌트를 입력하세요 (선택사항)"
+                                               maxlength="30"
+                                               class="w-full px-4 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200">
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center space-x-2">
+                                            <input type="number"
+                                                   id="hintShowTime"
+                                                   value="10"
+                                                   min="1"
+                                                   max="1800"
+                                                   class="flex-1 px-3 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200">
+                                            <span class="text-sm text-gray-400 whitespace-nowrap">초 남았을 때</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-2">힌트는 제한시간이 설정한 시간만큼 남았을 때 표시됩니다</p>
+                            </div>
+
+                            <!-- 오답 입력 (객관식용) -->
+                            <div id="incorrectSection" class="hidden">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">오답 선택지 (최대 4개)</label>
+                                <div class="flex space-x-2">
+                                    <input type="text"
+                                           id="incorrectInput"
+                                           placeholder="오답을 입력하고 Enter"
+                                           maxlength="30"
+                                           onkeypress="if(event.key==='Enter'){event.preventDefault();addIncorrect();}"
+                                           class="flex-1 px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-200">
+                                    <button onclick="addIncorrect()" 
+                                            class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                                        추가
+                                    </button>
+                                </div>
+                                <div id="incorrectList" class="flex flex-wrap gap-2 mt-3">
+                                </div>
+                            </div>
+
+                            <!-- 정답 이미지 (이미지 문제에서만 표시) -->
+                            <div id="answerImageSection" class="hidden">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">정답 공개 이미지 (선택)</label>
+                                <div class="flex items-center space-x-3">
+                                    <div id="answerImageDropZone" class="flex-1 cursor-pointer">
+                                        <div class="border-2 border-dashed border-gray-600 hover:border-blue-500 rounded-lg p-6 text-center transition-colors duration-200">
+                                            <svg class="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                            <p class="text-sm text-gray-400">이미지를 클릭하거나 드래그하세요</p>
+                                        </div>
+                                        <input type="file" id="answerImage" accept="image/*" class="hidden" onchange="previewImage(this, 'answerImagePreview')">
+                                    </div>
+                                </div>
+                                <div id="answerImagePreview" class="hidden mt-3">
+                                    <img src="" alt="미리보기" class="max-h-48 rounded-lg mx-auto">
+                                    <button onclick="removeImage('answerImage', 'answerImagePreview')"
+                                            class="mt-2 text-sm text-red-400 hover:text-red-300">이미지 제거</button>
+                                </div>
+                            </div>
+
+                            <!-- 정답 유튜브 영상 (영상/소리 문제에서만 표시) -->
+                            <div id="answerYoutubeSection" class="hidden bg-gray-700/30 rounded-xl p-6 border border-gray-700">
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                    </svg>
+                                    <span class="font-semibold text-white">정답 공개 유튜브 편집</span>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">유튜브 URL</label>
+                                        <input type="text" 
+                                               id="answerYoutubeUrl" 
+                                               placeholder="https://www.youtube.com/watch?v=..."
+                                               oninput="updateAnswerYoutubePreview()"
+                                               class="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-200">
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">시작 시간</label>
+                                            <input type="text" 
+                                                id="answerStartTime" 
+                                                placeholder="30 또는 2:30"
+                                                maxlength="20"
+                                                oninput="updateAnswerYoutubePreview()"
+                                                onblur="formatTimeOnBlur('answerStartTime')"
+                                                class="w-full px-3 py-2 bg-gray-900/50 border border-gray-600 rounded-lg text-white text-sm focus:border-green-500 focus:ring-1 focus:ring-green-500/20">
+                                            <p class="text-xs text-gray-500 mt-1">예: 30, 2:30</p>
+                                        </div>
+                                    </div>
+
+                                    <div id="answerYoutubePreview" class="hidden">
+                                        <p class="text-xs text-gray-400 mb-2">미리보기 (편집 모드 - 조작 가능)</p>
+                                        <div class="aspect-video bg-black rounded-lg overflow-hidden mb-2">
+                                            <iframe id="answerYoutubeIframe" 
+                                                    width="100%" 
+                                                    height="100%" 
+                                                    frameborder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                        <p class="text-xs text-green-400">정답 공개 시간은 5초입니다</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 토스트 알림 -->
+                            <div id="saveToastContainer" class="relative h-0"></div>
+
+                            <!-- 저장 버튼들 -->
+                            <div class="pt-6 border-t border-gray-700">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span id="autoSaveStatus" class="text-sm text-gray-400"></span>
+                                </div>
+                                <div class="flex space-x-3">
+                                    <button onclick="saveQuestion()"
+                                            class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-4 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
+                                        저장
+                                    </button>
+                                    <button onclick="deleteCurrentQuestion()"
+                                            class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-6 py-4 rounded-xl font-medium transition-all duration-200 border border-red-500/30">
+                                        삭제
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+        </main>
+
+        <!-- 우측 광고 영역 (xl 이상에서만 표시) -->
+        <aside class="hidden xl:flex xl:w-[160px] xl:justify-center sticky top-20 self-start">
+            <!-- 카카오 애드핏 광고 -->
+            <ins class="kakao_ad_area"
+                 style="display:none;"
+                 data-ad-unit="DAN-gnEAmPkmPaZvFnB6"
+                 data-ad-width="160"
+                 data-ad-height="600">
+            </ins>
+        </aside>
+    </div>
+    <!-- 3단 레이아웃 래퍼 끝 -->
+
+    <!-- quiz-edit.js를 모듈로 로드 -->
+    <script type="module" src="/js/quiz-edit.js"></script>
+</body>
+</html>

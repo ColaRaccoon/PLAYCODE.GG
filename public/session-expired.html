@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>세션 만료</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>세션이 만료되었거나 존재하지 않습니다.</h1>
+  <p>참여하셨던 게임이 종료되었을 수 있습니다.</p>
+  <button onclick="location.href='/'">메인 페이지로 돌아가기</button>
+</body>
+</html>

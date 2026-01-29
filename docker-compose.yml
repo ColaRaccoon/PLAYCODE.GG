@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # ========================================
+  # MongoDB 서비스 (userdb, quizdb 모두 포함)
+  # ========================================
+  mongodb:
+    image: mongo:7
+    container_name: playcode-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    networks:
+      - playcode-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # Redis 서비스 (Socket.IO adapter용)
+  # ========================================
+  redis:
+    image: redis:7-alpine
+    container_name: playcode-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - playcode-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ========================================
+  # Node.js 애플리케이션
+  # ========================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: playcode-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Node 환경
+      NODE_ENV: development
+      PORT: 3000
+
+      # MongoDB 연결 (Docker Compose 네트워크 내부 호스트명 사용)
+      USER_DB_URI: mongodb://admin:password123@mongodb:27017/userdb?authSource=admin
+      QUIZ_DB_URI: mongodb://admin:password123@mongodb:27017/quizdb?authSource=admin
+
+      # Redis 연결
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      # JWT 시크릿 (실제 환경에서는 .env 파일이나 Secrets 사용)
+      JWT_SECRET: ${JWT_SECRET:-3T42ZzgVHiI1nxJ2a+S/3Z93V5hwR9mDkKsl6Tx8w8o4=}
+
+      # OAuth 설정
+      NAVER_CLIENT_ID: ${NAVER_CLIENT_ID}
+      NAVER_CLIENT_SECRET: ${NAVER_CLIENT_SECRET}
+      NAVER_CALLBACK_URL: ${NAVER_CALLBACK_URL:-http://localhost:3000/auth/naver/callback}
+
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL:-http://localhost:3000/auth/google/callback}
+
+      # 관리자 키
+      ADMIN_SECRET_KEY: ${ADMIN_SECRET_KEY}
+      SUPERADMIN_SECRET_KEY: ${SUPERADMIN_SECRET_KEY}
+      PORTFOLIO_TOKEN: ${PORTFOLIO_TOKEN}
+
+      # AWS 설정
+      AWS_REGION: ${AWS_REGION:-ap-northeast-2}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_SES_FROM_EMAIL: ${AWS_SES_FROM_EMAIL}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+
+    volumes:
+      # 로그 파일 영구 저장
+      - ./logs:/app/logs
+      # 개발 모드용 코드 동기화 (선택사항)
+      # - .:/app
+      # - /app/node_modules
+    networks:
+      - playcode-network
+
+# ========================================
+# 볼륨 (데이터 영구 저장)
+# ========================================
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ========================================
+# 네트워크
+# ========================================
+networks:
+  playcode-network:
+    driver: bridge

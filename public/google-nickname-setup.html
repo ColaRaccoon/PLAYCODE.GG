@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>닉네임 설정</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body class="bg-[#222230] text-white min-h-screen">
+    <div class="max-w-md mx-auto pt-12 px-4">
+        <div class="bg-[#2d2d3d] rounded-2xl p-8 shadow-2xl border border-gray-600">
+
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 mx-auto mb-4 bg-blue-500 rounded-full flex items-center justify-center">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-semibold text-white mb-2">구글 연동 완료!</h1>
+                <p class="text-gray-400">사용할 닉네임을 설정해주세요</p>
+            </div>
+
+            <div id="alertContainer" class="mb-4"></div>
+
+            <form id="nicknameForm" class="space-y-6">
+                <div class="bg-[#3a3a4a] rounded-lg p-4 border border-gray-600">
+                    <p class="text-sm text-gray-400 mb-2">연동된 정보</p>
+                    <p class="text-white">이름: <span id="displayName">-</span></p>
+                    <p class="text-white">이메일: <span id="displayEmail">-</span></p>
+                </div>
+
+                <div>
+                    <label for="nickname" class="block text-sm font-medium text-gray-300 mb-2">
+                        닉네임 (게임에서 표시될 이름)
+                    </label>
+                    <input
+                        type="text"
+                        id="nickname"
+                        name="nickname"
+                        placeholder="사용할 닉네임을 입력해주세요"
+                        required
+                        maxlength="20"
+                        class="w-full px-4 py-3 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all duration-300 text-base"
+                    >
+                    <p class="text-xs text-gray-500 mt-1">2-20글자, 영문/한글/숫자 사용 가능</p>
+                </div>
+
+                <!-- 약관 동의 -->
+                <div class="space-y-3 py-2">
+                    <div class="flex items-start space-x-3">
+                        <input
+                            type="checkbox"
+                            id="termsAgree"
+                            name="termsAgree"
+                            class="mt-1 w-4 h-4 text-blue-600 bg-[#3a3a4a] border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                            required
+                        >
+                        <label for="termsAgree" class="text-sm text-gray-300">
+                            <span class="text-red-400">[필수]</span>
+                            <a href="/terms.html" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                                서비스 이용약관
+                            </a>
+                            에 동의합니다
+                        </label>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <input
+                            type="checkbox"
+                            id="privacyAgree"
+                            name="privacyAgree"
+                            class="mt-1 w-4 h-4 text-blue-600 bg-[#3a3a4a] border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                            required
+                        >
+                        <label for="privacyAgree" class="text-sm text-gray-300">
+                            <span class="text-red-400">[필수]</span>
+                            <a href="/privacy-policy.html" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                                개인정보 처리방침
+                            </a>
+                            에 동의합니다
+                        </label>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                >
+                    닉네임 설정하고 시작하기
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="mt-12 pb-8 text-center text-gray-400 text-sm">
+        <div class="space-x-4">
+            <a href="/terms.html" class="hover:text-white transition-colors no-underline">서비스 이용약관</a>
+            <span>|</span>
+            <a href="/privacy-policy.html" class="hover:text-white transition-colors no-underline">개인정보 처리방침</a>
+            <span>|</span>
+            <a href="/" class="hover:text-white transition-colors no-underline">PLAYCODE.GG</a>
+        </div>
+        <p class="mt-2">© 2025 PLAYCODE.GG. All rights reserved.</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // URL 파라미터에서 사용자 정보 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const tempToken = urlParams.get('temp_token');
+
+        if (tempToken) {
+            // 임시 토큰으로 사용자 정보 가져오기
+            fetchUserInfo(tempToken);
+        } else {
+            // 토큰이 없으면 로그인 페이지로
+            window.location.href = '/login';
+        }
+
+        // 닉네임 설정 폼 처리
+        document.getElementById('nicknameForm').addEventListener('submit', handleNicknameSubmit);
+    });
+
+    async function fetchUserInfo(tempToken) {
+        try {
+            const response = await fetch('/auth/google/temp-info', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${tempToken}`
+                }
+            });
+
+            if (response.ok) {
+                const userInfo = await response.json();
+                document.getElementById('displayName').textContent = userInfo.name || '-';
+                document.getElementById('displayEmail').textContent = userInfo.email || '-';
+
+                // 기본 닉네임 제안
+                const defaultNickname = userInfo.name ? userInfo.name.replace(/\s+/g, '') : '';
+                document.getElementById('nickname').value = defaultNickname;
+            } else {
+                throw new Error('사용자 정보를 가져올 수 없습니다');
+            }
+        } catch (error) {
+            console.error('사용자 정보 로드 실패:', error);
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+            window.location.href = '/login';
+        }
+    }
+
+    async function handleNicknameSubmit(e) {
+        e.preventDefault();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const tempToken = urlParams.get('temp_token');
+        const nickname = document.getElementById('nickname').value.trim();
+
+        if (!nickname) {
+            showAlert('error', '닉네임을 입력해주세요.');
+            return;
+        }
+
+        if (nickname.length < 2 || nickname.length > 20) {
+            showAlert('error', '닉네임은 2-20글자여야 합니다.');
+            return;
+        }
+
+        // 개인정보 처리방침 동의 확인
+        const privacyAgree = document.getElementById('privacyAgree');
+        if (!privacyAgree || !privacyAgree.checked) {
+            showAlert('error', '개인정보 처리방침에 동의해주세요.');
+            return;
+        }
+
+        // 로딩 상태
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '설정 중...';
+
+        try {
+            const response = await fetch('/auth/google/complete-signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tempToken}`
+                },
+                body: JSON.stringify({ nickname }),
+                credentials: 'include'
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showAlert('success', '닉네임 설정 완료! 메인 페이지로 이동합니다...');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                showAlert('error', result.message || '닉네임 설정에 실패했습니다.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        } catch (error) {
+            console.error('닉네임 설정 실패:', error);
+            showAlert('error', '네트워크 오류가 발생했습니다.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    }
+
+    function showAlert(type, message) {
+        const alertContainer = document.getElementById('alertContainer');
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+
+        alertContainer.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+
+        if (type === 'success') {
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
+        }
+    }
+    </script>
+</body>
+</html>

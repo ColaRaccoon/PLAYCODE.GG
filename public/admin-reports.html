@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>신고 관리 - 관리자</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/common.css">
+</head>
+<body class="bg-[#222230] text-white min-h-screen">
+
+  <div class="container max-w-7xl mx-auto px-4 py-8">
+
+    <!-- 헤더 -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-red-400">신고 관리</h1>
+          <p class="text-gray-400 mt-2">신고된 퀴즈와 댓글을 확인하고 조치할 수 있습니다.</p>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="window.location.href='/admin/dashboard'" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+            대시보드
+          </button>
+          <button onclick="window.location.href='/'" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+            메인으로
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭 -->
+    <div class="mb-6">
+      <div class="flex gap-2 border-b border-gray-700">
+        <button id="quizTab" class="tab-button px-6 py-3 font-semibold border-b-2 border-red-500 text-red-500 transition-colors">
+          퀴즈 신고
+        </button>
+        <button id="commentTab" class="tab-button px-6 py-3 font-semibold border-b-2 border-transparent text-gray-400 hover:text-white transition-colors">
+          댓글 신고
+        </button>
+      </div>
+    </div>
+
+    <!-- 퀴즈 신고 섹션 -->
+    <div id="quizReportsSection">
+      <!-- 로딩 상태 -->
+      <div id="quizLoadingState" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
+        <p class="text-gray-400 mt-4">신고된 퀴즈를 불러오는 중...</p>
+      </div>
+
+      <!-- 신고된 퀴즈 목록 -->
+      <div id="quizReportsContainer" class="hidden space-y-6">
+        <!-- 퀴즈 카드들이 여기에 표시됩니다 -->
+      </div>
+
+      <!-- 빈 상태 -->
+      <div id="quizEmptyState" class="hidden text-center py-12">
+        <svg class="w-20 h-20 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-gray-400">현재 신고된 퀴즈가 없습니다.</p>
+      </div>
+    </div>
+
+    <!-- 댓글 신고 섹션 -->
+    <div id="commentReportsSection" class="hidden">
+      <!-- 로딩 상태 -->
+      <div id="commentLoadingState" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
+        <p class="text-gray-400 mt-4">신고된 댓글을 불러오는 중...</p>
+      </div>
+
+      <!-- 신고된 댓글 목록 -->
+      <div id="commentReportsContainer" class="hidden space-y-6">
+        <!-- 댓글 카드들이 여기에 표시됩니다 -->
+      </div>
+
+      <!-- 빈 상태 -->
+      <div id="commentEmptyState" class="hidden text-center py-12">
+        <svg class="w-20 h-20 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-gray-400">현재 신고된 댓글이 없습니다.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="/js/admin-reports.js"></script>
+</body>
+</html>

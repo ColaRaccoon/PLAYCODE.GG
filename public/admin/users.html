@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>유저 관리 - 관리자</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/common.css">
+</head>
+<body class="bg-[#222230] text-white min-h-screen">
+
+  <div class="container max-w-7xl mx-auto px-4 py-8">
+
+    <!-- 헤더 -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-purple-400">유저 관리</h1>
+          <p class="text-gray-400 mt-2">전체 유저를 조회하고 관리할 수 있습니다.</p>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="window.location.href='/admin-dashboard.html'" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+            대시보드로
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 유저 관리 섹션 -->
+    <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">유저 목록</h2>
+        <div class="flex items-center gap-4">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="이름, 닉네임 또는 이메일 검색..."
+            class="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
+          >
+          <button
+            id="searchBtn"
+            class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors whitespace-nowrap"
+          >
+            검색
+          </button>
+          <select
+            id="filterRole"
+            class="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
+          >
+            <option value="all">전체</option>
+            <option value="user">일반 사용자</option>
+            <option value="admin">관리자</option>
+            <option value="superadmin">최고 관리자</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 로딩 상태 -->
+      <div id="loadingState" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+        <p class="text-gray-400 mt-4">유저 목록을 불러오는 중...</p>
+      </div>
+
+      <!-- 유저 테이블 -->
+      <div id="userTableContainer" class="hidden overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-600">
+              <th class="text-left p-3 text-gray-300">프로필</th>
+              <th class="text-left p-3 text-gray-300">이름</th>
+              <th class="text-left p-3 text-gray-300">닉네임</th>
+              <th class="text-left p-3 text-gray-300">이메일</th>
+              <th class="text-left p-3 text-gray-300">가입 방법</th>
+              <th class="text-left p-3 text-gray-300">생성일</th>
+              <th class="text-left p-3 text-gray-300">정지 상태</th>
+              <th class="text-center p-3 text-gray-300">작업</th>
+            </tr>
+          </thead>
+          <tbody id="userList">
+            <!-- 유저 목록이 여기에 표시됩니다 -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 빈 상태 -->
+      <div id="emptyState" class="hidden text-center py-12">
+        <svg class="w-20 h-20 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+        <p class="text-gray-400">검색 결과가 없습니다.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 프로필 이미지 변경 모달 -->
+  <div id="profileImageModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50" onclick="closeProfileImageModal()">
+    <div class="bg-[#2d2d3d] rounded-2xl p-8 max-w-md w-full mx-4 border border-gray-600" onclick="event.stopPropagation()">
+      <h3 class="text-2xl font-bold text-white mb-6">프로필 이미지 변경</h3>
+
+      <div class="space-y-4 mb-6">
+        <!-- 현재 프로필 이미지 미리보기 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">현재 프로필</label>
+          <div id="currentProfilePreview" class="mb-3 flex justify-center">
+            <div id="currentProfileImage" class="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold border-4 border-white/20">
+              <!-- 현재 프로필 이미지 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 새 프로필 이미지 업로드 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">새 프로필 이미지</label>
+          <label class="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg cursor-pointer transition-colors border border-gray-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span>이미지 선택</span>
+            <input
+              type="file"
+              id="newProfileImageInput"
+              accept="image/*"
+              onchange="handleProfileImageChange(event)"
+              class="hidden">
+          </label>
+          <p class="text-xs text-gray-400 mt-1">권장: 정사각형 비율, 최대 1MB</p>
+        </div>
+
+        <!-- 새 이미지 미리보기 -->
+        <div id="newProfilePreviewSection" class="hidden">
+          <label class="block text-sm font-medium text-gray-300 mb-2">미리보기</label>
+          <div class="flex justify-center">
+            <img id="newProfilePreview" class="w-24 h-24 rounded-full object-cover border-4 border-purple-500/50">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button
+          onclick="saveProfileImage()"
+          class="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium py-3 rounded-xl transition-all"
+        >
+          저장
+        </button>
+        <button
+          onclick="closeProfileImageModal()"
+          class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 rounded-xl transition-colors"
+        >
+          취소
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/admin-users.js"></script>
+</body>
+</html>

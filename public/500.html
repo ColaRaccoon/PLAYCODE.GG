@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - 서버 오류 | PLAYCODE.GG</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body class="bg-[#222230] text-white min-h-screen flex items-center justify-center">
+    <div class="max-w-2xl mx-auto px-4 py-8 text-center">
+        <div class="bg-[#2d2d3d] rounded-2xl p-12 shadow-2xl border border-gray-600">
+            <!-- 500 아이콘 -->
+            <div class="mb-8">
+                <svg class="w-32 h-32 mx-auto text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+
+            <!-- 에러 메시지 -->
+            <h1 class="text-6xl font-bold text-white mb-4">500</h1>
+            <h2 class="text-2xl font-semibold text-gray-300 mb-4">서버 내부 오류</h2>
+            <p class="text-gray-400 mb-8">
+                죄송합니다. 서버에서 일시적인 오류가 발생했습니다.<br>
+                잠시 후 다시 시도해주세요.
+            </p>
+
+            <!-- 액션 버튼들 -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                    onclick="window.location.reload()"
+                    class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                    ↻ 새로고침
+                </button>
+                <button
+                    onclick="window.location.href='/'"
+                    class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                    메인으로
+                </button>
+            </div>
+
+            <!-- 추가 안내 -->
+            <div class="mt-8 pt-6 border-t border-gray-600">
+                <p class="text-gray-400 text-sm mb-4">
+                    문제가 지속될 경우 아래로 문의해주세요.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 text-sm">
+                    <a href="/contact.html" class="text-blue-400 hover:text-blue-300 transition-colors">문의하기</a>
+                    <span class="text-gray-600">|</span>
+                    <a href="/terms.html" class="text-blue-400 hover:text-blue-300 transition-colors">이용약관</a>
+                    <span class="text-gray-600">|</span>
+                    <a href="/privacy-policy.html" class="text-blue-400 hover:text-blue-300 transition-colors">개인정보 처리방침</a>
+                </div>
+            </div>
+
+            <!-- 기술 정보 (개발 모드에서만) -->
+            <div id="errorDetails" class="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-left text-sm text-gray-400 hidden">
+                <div class="font-semibold text-red-400 mb-2">Error Details (Dev Mode):</div>
+                <div id="errorMessage" class="font-mono text-xs"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="fixed bottom-0 left-0 right-0 pb-4 text-center text-gray-500 text-xs">
+        <p>© 2025 PLAYCODE.GG. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // URL 파라미터에서 에러 메시지 읽기 (개발 모드)
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorMsg = urlParams.get('error');
+        if (errorMsg && window.location.hostname === 'localhost') {
+            document.getElementById('errorDetails').classList.remove('hidden');
+            document.getElementById('errorMessage').textContent = decodeURIComponent(errorMsg);
+        }
+    </script>
+</body>
+</html>

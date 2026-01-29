@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLAYCODE.GG 로그인</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body class="bg-[#222230] text-white min-h-screen">
+    <div class="max-w-md mx-auto pt-12 px-4">
+        <div class="bg-[#2d2d3d] rounded-2xl p-8 shadow-2xl border border-gray-600">
+            
+            <a href="/" 
+               class="block w-full text-center bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-lg mb-6 transition-colors duration-300 no-underline">
+                ← 메인페이지
+            </a>
+            
+            <h1 class="text-2xl font-semibold text-center text-white mb-8">로그인</h1>
+            
+            <div id="alertContainer" class="mb-4"></div>
+            
+            <form id="loginForm" class="space-y-4 mb-8">
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="이메일" 
+                    required
+                    class="w-full px-4 py-3 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all duration-300 text-base"
+                >
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="비밀번호" 
+                    required
+                    class="w-full px-4 py-3 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all duration-300 text-base"
+                >
+                <button 
+                    type="submit" 
+                    class="w-full bg-gradient-to-r from-[#8BA2FA] to-blue-500 hover:from-[#8BA2FA] hover:to-[#8BA2FA] text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                >
+                    로그인
+                </button>
+            </form>
+
+            <div class="divider my-6">
+                <span class="bg-[#2d2d3d] text-gray-400 text-sm">또는</span>
+            </div>
+
+            <div class="space-y-3">
+                <a href="/auth/naver?type=login"
+                   class="btn-naver block w-full text-center py-3 px-4 rounded-lg font-medium transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl no-underline">
+                    네이버로 로그인
+                </a>
+                <a href="/auth/google?type=login"
+                   class="btn-google block w-full text-center py-3 px-4 rounded-lg font-medium transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl no-underline">
+                    구글로 로그인
+                </a>
+            </div>
+
+            <div class="text-center mt-6">
+                <a href="/signup"
+                   class="text-gray-400 hover:text-green-400 transition-colors duration-300 no-underline">
+                    계정이 없으신가요? 회원가입
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="mt-12 pb-8 text-center text-gray-400 text-sm">
+        <div class="space-x-4">
+            <a href="/terms.html" class="hover:text-white transition-colors no-underline">서비스 이용약관</a>
+            <span>|</span>
+            <a href="/privacy-policy.html" class="hover:text-white transition-colors no-underline">개인정보 처리방침</a>
+            <span>|</span>
+            <a href="/" class="hover:text-white transition-colors no-underline">PLAYCODE.GG</a>
+        </div>
+        <p class="mt-2">© 2025 PLAYCODE.GG. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/login.js"></script>
+</body>
+</html>

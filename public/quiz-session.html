@@ -1,0 +1,447 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>PLAYCODE.GG 퀴즈 세션</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    /* 유튜브 플레이어 래퍼 */
+    .youtube-player-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    /* 유튜브 제목 가리기 오버레이 */
+    .youtube-title-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 70%, transparent 100%);
+        z-index: 20;
+        pointer-events: none;
+        border-radius: 8px 8px 0 0;
+    }
+
+    /* 유튜브 iframe 기본 스타일 */
+    .youtube-player-wrapper iframe {
+        border-radius: 8px;
+    }
+
+    /* 반응형 처리 */
+    @media (max-width: 768px) {
+        .youtube-player-wrapper {
+            max-width: 100% !important;
+        }
+
+    }
+  </style>
+</head>
+<body class="bg-[#222230] text-white min-h-screen">
+
+  <div class="container max-w-[1080px] mx-auto lg:px-0 px-4 py-8">
+    
+    <!-- 퀴즈 정보 섹션 (게임 시작 전) -->
+    <div id="quizInfoSection">
+
+      <div class="flex text-center flex-col md:flex-row justify-between md:gap-5 space-y-[20px] md:space-y-0">
+
+        <!-- 퀴즈 설명란과 게임시작 버튼 -->
+        <div class="bg-black/30 md:flex-[7] w-full rounded-2xl p-6 shadow-xl border border-gray-600">
+        
+          <div class="flex flex-col md:flex-row gap-6 items-center">
+
+            <!-- 썸네일 섹션 -->
+            <div class="flex-shrink-0">
+              <div id="quizThumbnail" class="relative w-48 h-32 md:w-[280px] md:h-[360px] rounded-xl overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                <!-- 기본 상태 -->
+                <div id="defaultThumbnail" class="text-4xl md:text-6xl font-bold text-white">Q</div>
+
+                <!-- 추천 버튼 (썸네일 오버레이) -->
+                <div id="recommendSection" class="hidden absolute bottom-2 right-2">
+                  <button id="recommendBtn" class="group flex items-center gap-1.5 bg-black/30 px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-black/50">
+                    <img id="recommendIcon" src="/images/Thumbsup1.png" alt="추천" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110">
+                    <span class="text-white font-semibold text-[12px]">추천</span>
+                    <span id="recommendCount" class="text-yellow-400 font-bold text-sm">0</span>
+                  </button>
+                </div>
+
+                <!-- 제작자 정보 박스 (썸네일 왼쪽 하단) -->
+                <div id="creatorSection" class="hidden max-md:!hidden absolute bottom-2 left-2">
+                  <div class="flex items-center gap-1.5 bg-black/30 px-3 py-1.5 rounded-lg">
+                    <span class="text-gray-300 text-[12px]">제작자:</span>
+                    <span id="creatorNickname" class="text-white font-semibold text-[12px] truncate max-w-[100px]">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 텍스트 섹션 -->
+            <div class="flex-1 text-center md:text-left flex flex-col justify-between md:h-[360px]">
+              <!-- 상단 그룹: 제목 + 설명 -->
+              <div class="space-y-4">
+                <h1 id="quizTitle" class="text-2xl font-bold text-white"></h1>
+                <p id="quizDescription" class="text-gray-300 leading-relaxed max-w-[660px]">
+                  <!-- 퀴즈 설명이 여기에 표시됩니다. -->
+                </p>
+              </div>
+
+
+                <!-- 하단 그룹: 볼륨 조절 + 문제 수 + 버튼 -->
+                <div class="space-y-4">
+                  <!-- 볼륨 조절 컨트롤 -->
+                  <div class="flex flex-col items-center md:items-start space-y-2">
+                    <label class="text-gray-300 text-sm font-medium">유튜브 볼륨</label>
+                    <div class="flex items-center gap-3 bg-gray-800/50 px-4 py-2 rounded-lg border border-gray-600 w-full max-w-xs">
+                      <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                      </svg>
+                      <input
+                        type="range"
+                        id="waitingVolumeSlider"
+                        class="flex-1 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                        min="0"
+                        max="100"
+                        value="50"
+                        oninput="setYoutubeVolume(this.value); document.getElementById('waitingVolumePercent').textContent = this.value + '%'"
+                        style="pointer-events: auto;"
+                      >
+                      <span id="waitingVolumePercent" class="text-white font-medium text-sm min-w-[45px]">50%</span>
+                    </div>
+                  </div>
+                  
+                  <!-- 이 문제 수 -->
+                  <div class="flex justify-center md:justify-start font-bold">
+                    <div class="text-blue-400 mb-2" id="totalQuestions">-</div>
+                    <div class="text-gray-400 ml-2">문제</div>
+                  </div>
+                  
+                  <!-- 게임 시작 버튼 -->
+                  <div class="flex justify-center md:justify-start">
+                    <button id="startBtn" class="hidden whitespace-nowrap w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-12 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg">
+                      게임시작
+                    </button>
+                  </div>
+                </div>
+                
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 오른쪽 박스 (3 비율) - 초대코드와 참가인원 창 -->
+        <div class="flex flex-col max-h-[410px] bg-black/30 md:flex-[3] rounded-2xl p-6 shadow-xl border border-gray-600">
+          <!-- 초대코드 구역 -->
+            <div class="flex pb-4 items-start">
+              
+              <div class="flex flex-wrap justify-center items-baseline gap-3">
+                
+                <div class="flex gap-2">
+
+                  <div class="text-gray-400 whitespace-nowrap">초대 코드 :</div>
+    
+                  <!-- 마스킹된 코드 + 토글 버튼 -->
+                  <div class="">
+                    <div class="flex space-x-3">
+                      <div id="inviteCodeDisplay" class="font-mono font-bold text-purple-400 tracking-wider">
+                        ******
+                      </div>
+                      <button 
+                        id="toggleCodeBtn" 
+                        class="translate-y-[-3px] text-gray-400 hover:text-white transition-colors p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="코드 보기/숨기기"
+                        disabled
+                      >
+                        <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+                
+                <!-- 복사 버튼 -->
+                <button 
+                  id="copyInviteBtn" 
+                  class="flex whitespace-nowrap bg-[#8BA2FA] hover:bg-[#617DE9] text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  disabled
+                >
+                  <div class="flex items-center justify-center space-x-2 text-[12px] font-bold">
+                    <svg id="copyIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                    <span id="copyBtnText">복사</span>
+                  </div>
+                </button>
+                
+              </div>
+            </div>
+
+
+            <!-- 스크롤 힌트 (선택 사항) -->
+            <div id="scrollHint" class="text-center text-sm text-gray-500 mb-2 hidden">
+              ↓ 스크롤하여 모든 참가자 보기 ↓
+            </div>
+
+            <!-- 참가자 목록 -->
+            <div class="flex-1 overflow-hidden flex flex-col ">
+              <div class="text-gray-400 text-sm mb-2 border-b border-gray-600 pb-2">
+                참가자 <span id="totalPlayerCount">0</span>명 ( 최대 12명 )
+              </div>
+              <ul id="playerList" class="space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
+                <!-- 참가자 목록이 여기에 표시됩니다 -->
+              </ul>
+            </div>
+        </div>
+
+      </div>
+
+      <!-- 대기실 댓글 & 채팅 섹션 -->
+      <div class="flex flex-col-reverse md:flex-row gap-5 mt-5">
+
+        <!-- 왼쪽: 퀴즈 댓글 섹션 -->
+        <div class="flex flex-col bg-black/30 md:flex-1 rounded-2xl p-6 shadow-xl border border-gray-600">
+          <!-- 헤더: 제목 + 페이지네이션 -->
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-[18px] font-semibold text-white">퀴즈 댓글</h3>
+
+            <!-- 페이지네이션 버튼 -->
+            <div id="commentsPagination" class="flex items-center gap-2">
+              <button id="prevCommentsBtn" class="p-1 text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed" disabled>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+              <span id="commentsPageInfo" class="text-sm text-gray-400 min-w-[60px] text-center">1 / 1</span>
+              <button id="nextCommentsBtn" class="p-1 text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed" disabled>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- 댓글 로딩 상태 -->
+          <div id="commentsLoading" class="text-center py-4 text-gray-400 hidden">
+            <svg class="animate-spin h-6 w-6 mx-auto" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-2 text-sm">댓글을 불러오는 중...</p>
+          </div>
+
+          <!-- 댓글 오류 상태 -->
+          <div id="commentsError" class="text-center py-4 text-red-400 text-sm hidden">
+            댓글을 불러오는 데 실패했습니다.
+          </div>
+
+          <!-- 댓글 목록 -->
+          <div id="commentsContainer" class="h-[220px] break-words overflow-y-auto mb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
+            <!-- 댓글들이 여기에 표시됩니다 -->
+          </div>
+
+          <!-- 댓글 입력 -->
+          <form id="commentForm" class="relative" onsubmit="return false;">
+            <input
+              type="text"
+              id="commentInput"
+              placeholder="댓글을 입력하세요 (최대 500자)"
+              maxlength="500"
+              class="w-full pr-14 pl-4 py-2 bg-[#2d2d3d] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all duration-300"
+            >
+            <button
+              type="button"
+              id="submitCommentBtn"
+              disabled
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent hover:opacity-80 transition-opacity p-1 disabled:opacity-30 disabled:cursor-not-allowed"
+              onclick="window.submitQuizComment && window.submitQuizComment()"
+            >
+              <img src="/images/Enter.png" alt="전송" class="w-8 h-8 object-contain">
+            </button>
+          </form>
+        </div>
+
+        <!-- 오른쪽: 대기실 채팅 섹션 -->
+        <div class="flex flex-col bg-black/30 md:flex-1 rounded-2xl p-6 shadow-xl border border-gray-600">
+          <h3 class="text-[18px] font-semibold text-white mb-4">대기실 채팅</h3>
+
+          <!-- 대기실 채팅 로그 -->
+          <div id="waitingChatLog" class="h-[220px] break-words overflow-y-auto space-y-2 mb-4 p-2 bg-black/30 rounded-lg scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
+            <!-- 채팅 메시지들이 여기에 표시됩니다 -->
+          </div>
+
+          <!-- 대기실 채팅 입력 -->
+          <form id="waitingChatForm" onsubmit="event.preventDefault(); currentWaitingSendFunction();" class="relative">
+            <input type="text" id="waitingChatInput" placeholder="메시지 입력"
+                  class="w-full pr-14 pl-4 py-2 bg-[#2d2d3d] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all duration-300">
+            <button type="button" onclick="currentWaitingSendFunction()"
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent hover:opacity-80 transition-opacity p-1">
+              <img src="/images/Enter.png" alt="전송" class="w-8 h-8 object-contain">
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      
+    </div>
+
+    <!-- 게임 진행 섹션 (게임 시작 후) -->
+    <div id="gameSection" class="hidden space-y-4">
+
+      <!-- 스코어보드 박스 스크롤바 css common.css 로 제어중 -->
+      <div class="bg-black/30 h-[110px] sm:h-auto rounded-2xl p-3 sm:p-6 shadow-xl border border-gray-600">
+        <!-- 스코어보드 컨테이너 -->
+        <div id="scoreboardWrapper" class="h-full sm:h-auto overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
+          <ul id="scoreboard" class="flex gap-2 sm:gap-3 h-full sm:h-auto">
+            <!-- 스코어보드가 여기에 표시됩니다 -->
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex text-center flex-col sm:flex-row justify-between sm:gap-5 space-y-[20px] sm:space-y-0">
+
+        <!-- 문제 박스 -->
+        <div class="bg-black/30 sm:flex-[7] sm:max-h-[660px] w-full rounded-2xl p-6 shadow-xl border border-gray-600">
+          
+          <!-- 타이머 + 문제 번호 + 스킵 버튼들 -->
+          <div class="mb-4 pb-3 border-b border-gray-600">
+            <!-- 상단 줄: 타이머 + 문제 번호 -->
+            <div class="relative flex items-center justify-center sm:justify-between mb-2">
+              <!-- 왼쪽: 타이머 -->
+              <div id="timerDisplay" class="text-sm font-bold text-gray-300">
+                남은 시간: --
+              </div>
+
+              <!-- 가운데: 문제 번호 (절대 위치) -->
+              <div id="currentQuestionNumber" class="hidden sm:block absolute left-1/2 transform -translate-x-1/2 text-blue-400 font-bold text-sm">
+                문제 - / -
+              </div>
+              
+              <!-- 오른쪽: 큰 화면에서만 스킵 버튼들 표시 -->
+              <div class="hidden sm:flex items-center gap-2">
+                <button id="voteSkipBtn" class="hidden border border-gray-600 hover:bg-blue-400 text-white text-xs px-3 py-1 rounded-lg shadow transition-colors">
+                  스킵투표 K
+                </button>
+                <button id="forceSkipBtn" class="hidden border border-gray-600 hover:bg-blue-400 text-white text-xs px-3 py-1 rounded-lg shadow transition-colors">
+                  강제스킵 P
+                </button>
+              </div>
+            </div>
+            
+            <!-- 하단 줄: 모바일에서만 스킵 버튼들 표시 -->
+            <div class="flex sm:hidden items-center justify-center gap-2">
+              <button id="voteSkipBtnMobile" class="hidden border border-gray-600 hover:bg-blue-400 text-white text-xs px-3 py-1 rounded-lg shadow transition-colors">
+                스킵투표
+              </button>
+              <button id="forceSkipBtnMobile" class="hidden border border-gray-600 hover:bg-blue-400 text-white text-xs px-3 py-1 rounded-lg shadow transition-colors">
+                강제스킵
+              </button>
+            </div>
+          </div>
+
+          <!-- 문제 내용 -->
+          <div id="questionBox" class="min-h-[300px] sm:min-h-[360px]">
+            <!-- 문제 내용이 여기에 표시됩니다 -->
+          </div>
+
+          <!-- 힌트 표시 영역 (문제 텍스트 바로 아래) -->
+          <div id="hintDisplay" class="hidden text-sm text-gray-300">
+            힌트:&nbsp;
+            <span id="hintText"></span>
+          </div>
+        </div>
+
+        <!-- 게임 채팅 및 답변 입력 섹션 -->
+        <div class="sm:flex-[3] bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600">
+          <!-- 헤더: 채팅 & 답변 + 스킵 상태 -->
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-[18px] font-semibold text-white">채팅 & 답변</h3>
+            
+            <!-- 스킵 상태 표시 -->
+            <div id="skipStatus" class="hidden bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1">
+              <span class="text-xs text-gray-300">스킵: 0/0</span>
+            </div>
+          </div>
+          
+          <!-- 채팅 로그 -->
+          <div id="chatLog" class="h-[90px] sm:h-[460px] break-words overflow-y-auto space-y-2 mb-4 p-2 bg-black/30 rounded-lg scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
+            <!-- 채팅 메시지들이 여기에 표시됩니다 -->
+          </div>
+          
+          <!-- 채팅 입력 -->
+          <form id="chatForm" onsubmit="event.preventDefault(); currentSendFunction();" class="relative">
+            <input type="text" id="chatInput" placeholder="메시지 입력 또는 답변 입력" 
+                  class="w-full pr-14 pl-4 py-2 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all duration-300">
+            <button type="button" onclick="currentSendFunction()"
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent hover:opacity-80 transition-opacity p-1">
+              <img src="/images/Enter.png" alt="전송" class="w-8 h-8 object-contain">
+            </button>
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 퀴즈 종료 화면 -->
+    <div id="gameEndSection" class="hidden">
+      <div class="bg-black/30 rounded-2xl p-8 shadow-xl border border-gray-600">
+        <!-- 헤더 -->
+        <div class="text-center mb-8">
+          <h1 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 mb-2">
+            퀴즈 종료!
+          </h1>
+
+          <!-- 퀴즈 제목 + 추천 버튼 -->
+          <div class="flex items-center justify-center gap-3 mb-3">
+            <h2 id="endQuizTitle" class="text-2xl font-bold text-white">-</h2>
+
+            <!-- 추천 버튼 -->
+            <button id="endRecommendBtn" class="group flex items-center gap-1.5 bg-gray-700/50 px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-gray-600/50 border border-gray-500">
+              <img id="endRecommendIcon" src="/images/Thumbsup1.png" alt="추천" class="w-5 h-5 transition-transform duration-200 group-hover:scale-110">
+              <span id="endRecommendCount" class="text-white font-semibold text-sm">0</span>
+            </button>
+          </div>
+
+          <p class="text-gray-300">
+            <span>제작자: </span><span id="endCreatorNickname" class="font-semibold text-white">-</span><span>, 수고하셨습니다! 최종 순위를 확인해보세요.</span>
+          </p>
+        </div>
+
+        <!-- 최종 순위 리스트 -->
+        <div class="bg-gray-800/50 rounded-xl p-6 mb-6">
+          <h2 class="text-xl font-bold text-white mb-6 text-center">최종 순위</h2>
+          <ul id="finalRankingList" class="space-y-4">
+            <!-- 순위가 여기에 표시됩니다 -->
+          </ul>
+        </div>
+
+        <!-- 하단 버튼 -->
+        <div class="flex justify-center gap-4">
+          <button onclick="window.location.href='/'" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg">
+            메인으로
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Socket.IO 및 스크립트 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/CorrectUserManager.js"></script>
+  <script type="module" src="/js/quiz-session.js"></script>
+  <!-- quiz-comments.js는 quiz-session.js에서 import되므로 별도 로드 불필요 -->
+
+</body>
+</html>

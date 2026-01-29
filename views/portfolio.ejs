@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title><%= title || 'Portfolio - Lee Seonghyeon' %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #3b82f6;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--white);
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            page-break-after: always;
+            position: relative;
+        }
+
+        .page:last-child {
+            page-break-after: auto;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            border-bottom: 4px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .hero-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 40px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .info-box {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .info-box h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-box li {
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        .info-box li:before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), #2563eb);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* Feature Cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-card li {
+            padding: 5px 0;
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .feature-card li:before {
+            content: "✓";
+            color: var(--success-color);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* Tech Stack */
+        .tech-diagram {
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .tech-layer {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .tech-layer h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .tech-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tech-tag {
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Achievement Section */
+        .achievement {
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(to right, #f8fafc, #f1f5f9);
+            border-radius: 12px;
+            border-left: 6px solid var(--danger-color);
+        }
+
+        .achievement.solution {
+            border-left-color: var(--primary-color);
+        }
+
+        .achievement.result {
+            border-left-color: var(--success-color);
+        }
+
+        .achievement-label {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .achievement-label.problem {
+            background: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .achievement-label.solution {
+            background: #dbeafe;
+            color: var(--primary-color);
+        }
+
+        .achievement-label.result {
+            background: #d1fae5;
+            color: var(--success-color);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        /* Performance Table */
+        .perf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .perf-table thead {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .perf-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .perf-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 13px;
+        }
+
+        .perf-table tr:hover {
+            background: var(--light-gray);
+        }
+
+        .improvement {
+            color: var(--success-color);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* Comparison Chart */
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .comparison-bar {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 10px;
+        }
+
+        .comparison-bar.before {
+            border: 3px solid var(--danger-color);
+        }
+
+        .comparison-bar.after {
+            border: 3px solid var(--success-color);
+        }
+
+        .comparison-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .comparison-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 10px;
+        }
+
+        .comparison-arrow {
+            font-size: 48px;
+            color: var(--success-color);
+        }
+
+        /* Learning Points */
+        .learning-grid {
+            display: grid;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .learning-item {
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .learning-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .insight {
+            background: #fef3c7;
+            border-left: 5px solid var(--warning-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .insight:before {
+            content: "💡 교훈: ";
+            font-weight: 700;
+            color: var(--warning-color);
+            font-style: normal;
+        }
+
+        /* Future Plans */
+        .future-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .future-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .future-card h4 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .future-card p {
+            font-size: 13px;
+            opacity: 0.95;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .contact-item {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .contact-item strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                padding: 15mm;
+            }
+        }
+
+        /* Divider */
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, var(--primary-color), transparent);
+            margin: 30px 0;
+        }
+
+        /* Screenshot placeholder */
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 300px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Page 1: Project Overview -->
+<div class="page">
+    <div class="hero">
+        <h1>PLAYCODE.GG</h1>
+        <p class="hero-subtitle">실시간 멀티플레이어 퀴즈 플랫폼 - 누구나 쉽게 퀴즈를 만들고, 공유하고, 함께 즐길 수 있습니다</p>
+        <a href="https://playcode.gg" class="hero-link" target="_blank">🔗 Live Service: playcode.gg</a>
+    </div>
+
+    <div class="screenshot-placeholder">
+        게임 진행 화면 스크린샷
+    </div>
+
+    <div class="info-grid">
+        <div class="info-box">
+            <h3>📌 프로젝트 배경 & 동기</h3>
+            <p style="font-size: 13px; line-height: 1.7;">
+                기존 퀴즈 플랫폼의 복잡한 회원가입 절차, 제한적인 문제 유형, 실시간 경쟁의 재미 부족 등의 문제점을 해결하고자 시작했습니다.
+                누구나 쉽게 접근하고, 다양한 형태의 문제를 만들고, 실시간으로 함께 즐길 수 있는 플랫폼을 목표로 했습니다.
+            </p>
+        </div>
+        <div class="info-box">
+            <h3>👨‍💻 개발 정보</h3>
+            <ul>
+                <li><strong>개발 기간:</strong> 2024.XX ~ 2025.XX</li>
+                <li><strong>개발 인원:</strong> 1인 (Full-stack)</li>
+                <li><strong>담당 범위:</strong> 기획, 디자인, Frontend/Backend 개발, DevOps, 운영</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">X,XXX</div>
+            <div class="stat-label">누적 사용자</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">X,XXX</div>
+            <div class="stat-label">생성된 퀴즈</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">X,XXX</div>
+            <div class="stat-label">진행된 게임</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">10,000+</div>
+            <div class="stat-label">동시 처리 가능 세션</div>
+        </div>
+    </div>
+
+    <div class="info-box" style="margin-top: 30px;">
+        <h3>🎯 프로젝트 목표</h3>
+        <p style="font-size: 13px; line-height: 1.7;">
+            <strong>1. 낮은 진입 장벽:</strong> 게스트 모드로 회원가입 없이 즉시 플레이 가능<br>
+            <strong>2. 다양한 콘텐츠:</strong> 이미지, 유튜브 영상, 오디오 등 다양한 문제 유형 지원<br>
+            <strong>3. 실시간 경쟁:</strong> 최대 12명이 동시에 참여하는 실시간 멀티플레이어 게임<br>
+            <strong>4. 쉬운 제작:</strong> 드래그 앤 드롭으로 누구나 쉽게 퀴즈 제작 가능
+        </p>
+    </div>
+</div>
+
+<!-- Page 2: Key Features -->
+<div class="page">
+    <h2>✨ 주요 기능 (Key Features)</h2>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🎮</div>
+            <h4>실시간 멀티플레이어</h4>
+            <ul>
+                <li>최대 12명 동시 참여</li>
+                <li>실시간 점수 및 순위 표시</li>
+                <li>첫 정답자 보너스 점수</li>
+                <li>게임 종료 시 퍼센타일 랭킹</li>
+                <li>초대 코드로 간편 참여</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h4>다양한 문제 유형</h4>
+            <ul>
+                <li>주관식, 객관식 문제</li>
+                <li>이미지 기반 문제</li>
+                <li>유튜브 영상 문제</li>
+                <li>오디오 문제</li>
+                <li>특정 구간 재생 지원</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">👥</div>
+            <h4>게스트 모드</h4>
+            <ul>
+                <li>회원가입 없이 바로 플레이</li>
+                <li>낮은 진입 장벽</li>
+                <li>OAuth 2.0 소셜 로그인 지원</li>
+                <li>Google, Naver 연동</li>
+                <li>빠른 게임 시작</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">💬</div>
+            <h4>실시간 채팅</h4>
+            <ul>
+                <li>게임 중 다른 플레이어와 소통</li>
+                <li>실시간 메시지 동기화</li>
+                <li>커뮤니티 기능 (댓글, 추천)</li>
+                <li>신고 기능</li>
+                <li>관리자 대시보드</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">💾</div>
+            <h4>자동 저장</h4>
+            <ul>
+                <li>문제별 즉시 저장</li>
+                <li>작업 손실 방지</li>
+                <li>재접속 시 상태 복원</li>
+                <li>드래그 앤 드롭 이미지 업로드</li>
+                <li>문제 순서 랜덤화</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h4>보안 & 공정성</h4>
+            <ul>
+                <li>해시 기반 정답 검증</li>
+                <li>Redis 기반 동시성 제어</li>
+                <li>치팅 방지 시스템</li>
+                <li>서버 측 이중 검증</li>
+                <li>JWT httpOnly 쿠키 인증</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="screenshot-placeholder" style="height: 200px;">
+        퀴즈 제작 화면 - 드래그 앤 드롭 인터페이스
+    </div>
+</div>
+
+<!-- Page 3: Tech Stack -->
+<div class="page">
+    <h2>🛠 기술 스택 (Tech Stack)</h2>
+
+    <div class="tech-diagram">
+        <div class="tech-layer">
+            <h4>Frontend</h4>
+            <div class="tech-items">
+                <span class="tech-tag">EJS (SSR)</span>
+                <span class="tech-tag">TailwindCSS</span>
+                <span class="tech-tag">Vanilla JavaScript</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 15px; font-size: 24px; color: var(--primary-color);">
+            ⬍ Socket.IO (실시간 통신) ⬍
+        </div>
+
+        <div class="tech-layer">
+            <h4>Backend</h4>
+            <div class="tech-items">
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">Express.js</span>
+                <span class="tech-tag">RESTful API</span>
+            </div>
+        </div>
+
+        <div class="tech-layer">
+            <h4>Database & Caching</h4>
+            <div class="tech-items">
+                <span class="tech-tag">MongoDB (Mongoose)</span>
+                <span class="tech-tag">Redis</span>
+                <span class="tech-tag">TTL Index</span>
+            </div>
+        </div>
+
+        <div class="tech-layer">
+            <h4>Infrastructure & DevOps</h4>
+            <div class="tech-items">
+                <span class="tech-tag">AWS S3</span>
+                <span class="tech-tag">Presigned URL</span>
+                <span class="tech-tag">JWT</span>
+            </div>
+        </div>
+
+        <div class="tech-layer">
+            <h4>External APIs</h4>
+            <div class="tech-items">
+                <span class="tech-tag">YouTube IFrame API</span>
+                <span class="tech-tag">OAuth 2.0</span>
+                <span class="tech-tag">Google</span>
+                <span class="tech-tag">Naver</span>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="margin-top: 40px;">💡 기술 선택 이유</h3>
+
+    <div class="info-grid">
+        <div class="info-box">
+            <h3>Socket.IO</h3>
+            <p style="font-size: 13px;">실시간 양방향 통신으로 멀티플레이어 게임 구현. 자동 재연결과 fallback 메커니즘으로 안정적인 실시간 동기화 보장</p>
+        </div>
+
+        <div class="info-box">
+            <h3>Redis</h3>
+            <p style="font-size: 13px;">원자적 연산(SET NX)으로 첫 정답자 판정의 정확성 보장. 밀리초 단위 동시 제출에도 Race Condition 없이 처리</p>
+        </div>
+
+        <div class="info-box">
+            <h3>MongoDB + TTL Index</h3>
+            <p style="font-size: 13px;">게임 세션 자동 정리로 운영 부담 최소화. 유연한 스키마로 다양한 문제 유형 지원 가능</p>
+        </div>
+
+        <div class="info-box">
+            <h3>AWS S3 + Presigned URL</h3>
+            <p style="font-size: 13px;">Base64 대비 120배 빠른 로딩 속도. 서버 부담 없이 대용량 이미지 처리 가능</p>
+        </div>
+    </div>
+</div>
+
+<!-- Page 4: Achievement 1 -->
+<div class="page">
+    <h2>🚀 핵심 성과 1</h2>
+    <h3>클라이언트 측 타이머 전략으로 확장성 10배 개선</h3>
+
+    <div class="achievement">
+        <span class="achievement-label problem">🔴 문제 상황</span>
+        <p>
+            서버에서 모든 게임 세션의 타이머를 setTimeout으로 관리하다 보니, 세션이 1,000개를 넘어가면 메모리 50MB, CPU 5-10% 사용.
+            서버 부하 시 타이머 지연 발생 가능성과 타이머 누수 위험이 있었습니다.
+        </p>
+    </div>
+
+    <div class="achievement solution">
+        <span class="achievement-label solution">💡 해결 방법</span>
+        <h4>타이머 계산을 클라이언트로 이동하는 하이브리드 방식 도입</h4>
+
+        <div class="code-block">// 서버: 타이머 값과 시작 시간만 전송
+io.to(sessionId).emit('question-start', {
+    timeLimit: 90,              // 클라이언트 카운트다운용
+    questionStartAt: new Date(), // 재접속 시 계산용
+});
+
+// 클라이언트: 직접 타이머 관리
+setTimeout(() => revealAnswer(), timeLimit * 1000);
+
+// 재접속: 경과 시간 계산
+const elapsed = Date.now() - questionStartAt.getTime();
+const remaining = Math.max(0, timeLimit * 1000 - elapsed);</div>
+
+        <ul style="margin-top: 15px;">
+            <li>✓ 서버는 제한시간 값과 시작 시간만 전송</li>
+            <li>✓ 클라이언트가 직접 타이머를 관리</li>
+            <li>✓ 재접속 시 경과 시간을 계산하여 정확한 남은 시간 복원</li>
+        </ul>
+    </div>
+
+    <div class="achievement result">
+        <span class="achievement-label result">✅ 결과</span>
+
+        <div class="comparison">
+            <div class="comparison-item">
+                <div class="comparison-bar before">
+                    <div class="comparison-value">~1,000</div>
+                    <div class="comparison-label">세션</div>
+                    <div style="margin-top: 15px; font-size: 13px;">메모리: ~50MB<br>CPU: 5-10%</div>
+                </div>
+                <strong style="color: var(--danger-color);">Before</strong>
+            </div>
+
+            <div class="comparison-arrow">→</div>
+
+            <div class="comparison-item">
+                <div class="comparison-bar after">
+                    <div class="comparison-value">10,000+</div>
+                    <div class="comparison-label">세션</div>
+                    <div style="margin-top: 15px; font-size: 13px;">메모리: 거의 없음<br>CPU: ~0%</div>
+                </div>
+                <strong style="color: var(--success-color);">After</strong>
+            </div>
+        </div>
+
+        <ul style="margin-top: 20px;">
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ 서버 메모리/CPU 사용량 99% 감소</li>
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ 동시 처리 가능 세션: 1,000개 → 10,000개+ (10배 증가)</li>
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ 재접속 시에도 정확한 게임 상태 복원</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Page 5: Achievement 2 -->
+<div class="page">
+    <h2>🚀 핵심 성과 2</h2>
+    <h3>AWS S3 마이그레이션으로 로딩 속도 120배 개선</h3>
+
+    <div class="achievement">
+        <span class="achievement-label problem">🔴 문제 상황</span>
+        <p>
+            초기에는 이미지를 Base64로 인코딩하여 MongoDB에 저장했습니다.
+            이미지가 포함된 퀴즈 목록을 불러올 때 <strong>2분 이상</strong> 소요되어 사용자 경험이 매우 나빴습니다.
+            MongoDB 무료 티어(M0)의 제한된 성능으로 인해 쿼리 속도가 더욱 저하되었습니다.
+        </p>
+    </div>
+
+    <div class="achievement solution">
+        <span class="achievement-label solution">💡 해결 방법</span>
+        <h4>AWS S3 Presigned URL 방식으로 전환</h4>
+
+        <div class="code-block">// 이미지 업로드 시
+const s3Key = `quiz-images/${quizId}/${timestamp}.${ext}`;
+await s3.upload({ Bucket, Key: s3Key, Body: imageBuffer });
+
+// 조회 시: Presigned URL 생성 (1시간 유효)
+const imageUrl = s3.getSignedUrl('getObject', {
+    Bucket, Key: s3Key, Expires: 3600
+});</div>
+
+        <ul style="margin-top: 15px;">
+            <li>✓ 이미지는 S3에 저장하고, DB에는 S3 키만 저장 (약 100 bytes)</li>
+            <li>✓ 조회 시 1시간 유효한 Presigned URL 생성</li>
+            <li>✓ 이미지 로딩을 CDN에 분산하여 서버 부담 감소</li>
+        </ul>
+    </div>
+
+    <div class="achievement result">
+        <span class="achievement-label result">✅ 결과</span>
+
+        <div style="background: white; padding: 30px; border-radius: 12px; margin: 20px 0;">
+            <h4 style="text-align: center; margin-bottom: 30px;">로딩 시간 비교</h4>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div style="flex: 1;">
+                    <strong>Base64 (MongoDB)</strong>
+                    <div style="background: var(--danger-color); height: 50px; border-radius: 8px; margin-top: 10px; position: relative;">
+                        <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: white; font-weight: 700;">120초</span>
+                    </div>
+                </div>
+                <div style="font-size: 48px; color: var(--success-color);">→</div>
+                <div style="flex: 1;">
+                    <strong>AWS S3</strong>
+                    <div style="background: var(--success-color); height: 50px; width: 5%; border-radius: 8px; margin-top: 10px; position: relative;">
+                        <span style="position: absolute; left: 60px; top: 50%; transform: translateY(-50%); color: var(--success-color); font-weight: 700; white-space: nowrap;">1초</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul style="margin-top: 20px;">
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ 로딩 시간: 2분+ → 1초 이하 (120배 개선)</li>
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ MongoDB 문서 크기: 1MB → 100 bytes (이미지당)</li>
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ 서버 부담 감소로 더 많은 동시 사용자 처리 가능</li>
+        </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="screenshot-placeholder" style="height: 180px;">
+        퀴즈 목록 화면 - 빠른 이미지 로딩
+    </div>
+</div>
+
+<!-- Page 6: Achievement 3 & Performance -->
+<div class="page">
+    <h2>🚀 핵심 성과 3</h2>
+    <h3>Redis 원자적 연산으로 동시성 문제 완벽 해결</h3>
+
+    <div class="achievement">
+        <span class="achievement-label problem">🔴 문제 상황</span>
+        <p>
+            여러 플레이어가 동시에 정답을 제출하면 Race Condition 발생.
+            두 명 이상이 동시에 2점(첫 정답 보너스)을 받는 버그가 있었습니다.
+        </p>
+    </div>
+
+    <div class="achievement solution">
+        <span class="achievement-label solution">💡 해결 방법</span>
+
+        <div class="code-block">// Redis의 SET NX (Not eXists) 원자적 연산 활용
+const redisKey = `first:${sessionId}:${questionIndex}`;
+const result = await redisClient.set(redisKey, userId, {
+    NX: true,  // 키가 없을 때만 설정 (원자적!)
+    EX: 3600   // 1시간 후 자동 삭제
+});
+
+const isFirstCorrectUser = (result === 'OK');
+const scoreIncrement = isFirstCorrectUser ? 2 : 1;</div>
+    </div>
+
+    <div class="achievement result">
+        <span class="achievement-label result">✅ 결과</span>
+        <ul>
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ Race Condition 100% 해결</li>
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ 밀리초 단위 동시 제출에도 정확한 판정</li>
+            <li style="font-size: 16px; font-weight: 600; color: var(--success-color);">✓ 클러스터 모드에서도 정상 작동</li>
+        </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2 style="margin-top: 40px;">⚡ 성능 최적화 요약</h2>
+
+    <table class="perf-table">
+        <thead>
+            <tr>
+                <th>항목</th>
+                <th>Before</th>
+                <th>After</th>
+                <th>개선율</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>퀴즈 목록 로딩</strong></td>
+                <td>2분+</td>
+                <td>1초 이하</td>
+                <td class="improvement">120배 ⬆</td>
+            </tr>
+            <tr>
+                <td><strong>퀴즈 20개 조회</strong></td>
+                <td>4초</td>
+                <td>0.3초</td>
+                <td class="improvement">13배 ⬆</td>
+            </tr>
+            <tr>
+                <td><strong>DB 쿼리 수 (N+1)</strong></td>
+                <td>21개</td>
+                <td>1개</td>
+                <td class="improvement">95% ⬇</td>
+            </tr>
+            <tr>
+                <td><strong>서버 메모리 (1000 세션)</strong></td>
+                <td>~50MB</td>
+                <td>거의 없음</td>
+                <td class="improvement">99% ⬇</td>
+            </tr>
+            <tr>
+                <td><strong>동시 처리 가능 세션</strong></td>
+                <td>~1,000개</td>
+                <td>10,000개+</td>
+                <td class="improvement">10배 ⬆</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Page 7: Lessons Learned -->
+<div class="page">
+    <h2>📚 배운 점 & 개선 방향</h2>
+
+    <h3>배운 점 (Lessons Learned)</h3>
+
+    <div class="learning-grid">
+        <div class="learning-item">
+            <span class="learning-number">1</span>
+            <h4>확장성을 고려한 설계의 중요성</h4>
+            <p>
+                초기 설계 단계에서 확장성을 고려하지 않아 1,000개 세션 이상에서 성능 문제를 겪었습니다.
+                이후 클라이언트 측 타이머로 전환하여 10배 이상의 확장성을 확보했습니다.
+            </p>
+            <div class="insight">초기부터 부하 분산과 확장성을 고려한 아키텍처 설계 필요</div>
+        </div>
+
+        <div class="learning-item">
+            <span class="learning-number">2</span>
+            <h4>성능 병목 지점 조기 발견의 중요성</h4>
+            <p>
+                Base64 이미지 저장으로 2분+ 로딩 시간이 발생했지만, 프로파일링 툴을 활용하여
+                병목 지점을 빠르게 파악하고 S3로 마이그레이션했습니다.
+            </p>
+            <div class="insight">지속적인 모니터링과 성능 측정으로 문제를 조기에 발견</div>
+        </div>
+
+        <div class="learning-item">
+            <span class="learning-number">3</span>
+            <h4>동시성 제어의 복잡성</h4>
+            <p>
+                멀티플레이어 게임에서 동시성 문제는 예상보다 복잡했습니다.
+                Redis의 원자적 연산을 활용하여 완벽하게 해결할 수 있었습니다.
+            </p>
+            <div class="insight">분산 시스템에서는 Redis와 같은 도구로 동시성 문제 해결</div>
+        </div>
+
+        <div class="learning-item">
+            <span class="learning-number">4</span>
+            <h4>사용자 경험의 중요성</h4>
+            <p>
+                게스트 모드 도입으로 회원가입 장벽을 제거하여 사용자 유입이 크게 증가했습니다.
+                기술적 완성도만큼 사용자 경험도 중요함을 깨달았습니다.
+            </p>
+            <div class="insight">기술과 UX의 균형이 서비스 성공의 핵심</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>향후 개선 방향 (Future Improvements)</h3>
+
+    <div class="future-grid">
+        <div class="future-card">
+            <h4>1️⃣ 마이크로서비스 아키텍처</h4>
+            <p>현재 모놀리식 구조를 마이크로서비스로 분리하여 각 서비스를 독립적으로 스케일링</p>
+        </div>
+
+        <div class="future-card">
+            <h4>2️⃣ 실시간 관전 모드</h4>
+            <p>게임에 참여하지 않은 사용자도 실시간으로 게임을 관전할 수 있는 기능 추가</p>
+        </div>
+
+        <div class="future-card">
+            <h4>3️⃣ AI 기반 문제 추천</h4>
+            <p>사용자의 플레이 히스토리를 분석하여 취향에 맞는 퀴즈를 추천하는 ML 모델 도입</p>
+        </div>
+
+        <div class="future-card">
+            <h4>4️⃣ WebRTC 음성 채팅</h4>
+            <p>텍스트 채팅뿐만 아니라 음성 채팅을 지원하여 더 생동감 있는 게임 경험 제공</p>
+        </div>
+    </div>
+</div>
+
+<!-- Page 8: Demo & Contact -->
+<div class="page">
+    <h2>🎮 프로젝트 데모 (Demo)</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 30px 0;">
+        <div>
+            <div class="screenshot-placeholder" style="height: 200px;">
+                메인 화면<br>(퀴즈 목록)
+            </div>
+        </div>
+        <div>
+            <div class="screenshot-placeholder" style="height: 200px;">
+                게임 진행 화면<br>(실시간 점수)
+            </div>
+        </div>
+        <div>
+            <div class="screenshot-placeholder" style="height: 200px;">
+                유튜브 문제<br>(동기화 재생)
+            </div>
+        </div>
+        <div>
+            <div class="screenshot-placeholder" style="height: 200px;">
+                결과 화면<br>(스코어보드)
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>🔗 링크 (Links)</h3>
+    <div class="contact-grid">
+        <div class="contact-item">
+            <strong>🌐 Live Service</strong>
+            https://playcode.gg
+        </div>
+        <div class="contact-item">
+            <strong>💻 GitHub Repository</strong>
+            github.com/yourusername/playcode
+        </div>
+        <div class="contact-item">
+            <strong>📄 상세 기술 문서</strong>
+            GitHub README 참고
+        </div>
+        <div class="contact-item">
+            <strong>🎥 데모 영상</strong>
+            YouTube 링크
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>📞 연락처 (Contact)</h3>
+    <div style="background: linear-gradient(135deg, var(--primary-color), #2563eb); color: white; padding: 40px; border-radius: 12px; text-align: center;">
+        <h3 style="color: white; font-size: 28px; margin-bottom: 20px;">이성현 (Lee Seonghyeon)</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 600px; margin: 0 auto;">
+            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                <strong>📧 Email</strong><br>
+                your.email@example.com
+            </div>
+            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                <strong>💼 LinkedIn</strong><br>
+                linkedin.com/in/yourprofile
+            </div>
+            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                <strong>💻 GitHub</strong><br>
+                github.com/yourusername
+            </div>
+            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                <strong>📱 Portfolio</strong><br>
+                yourportfolio.com
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 2px solid var(--light-gray);">
+        <p style="color: var(--gray); font-size: 14px;">
+            본 포트폴리오는 실제 운영 중인 서비스를 바탕으로 작성되었습니다.<br>
+            더 자세한 내용은 GitHub README를 참고해주세요.
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

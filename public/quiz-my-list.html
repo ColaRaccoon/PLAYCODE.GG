@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLAYCODE.GG 내 퀴즈</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/index.css">
+
+    <!-- 광고 스크립트 (효율적인 방식: head에서 한 번만 로드) -->
+    <script src="https://ads-partners.coupang.com/g.js"></script>
+    <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+</head>
+<body class="bg-[#222230] min-h-screen">
+    <!-- 상단바가 여기에 자동으로 삽입됩니다 -->
+
+    <!-- 3단 레이아웃 래퍼 (광고 + 콘텐츠 + 광고) -->
+    <div class="flex justify-center gap-4 xl:gap-6 px-2 xl:px-4">
+        <!-- 좌측 광고 영역 (xl 이상에서만 표시) -->
+        <aside class="hidden xl:flex xl:w-[160px] xl:justify-center sticky top-20 self-start">
+            <div class="w-[160px] h-[600px]">
+                <script>
+                    new PartnersCoupang.G({"id":932761,"template":"carousel","trackingCode":"AF8328090","width":"160","height":"600","tsource":""});
+                </script>
+            </div>
+        </aside>
+
+        <!-- 중앙 콘텐츠 -->
+        <main class="w-full xl:w-[1080px] py-8">
+            <div class="sm:px-0 px-4">
+
+        <!-- 로딩 상태 -->
+        <div id="loadingSection" class="text-center py-16">
+            <div class="inline-flex items-center space-x-2 text-gray-300">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                <span class="text-lg">퀴즈 목록을 불러오는 중...</span>
+            </div>
+        </div>
+
+        <!-- 빈 상태 (퀴즈가 없을 때) -->
+        <div id="emptySection" class="hidden text-center py-16">
+            <div class="bg-[#2d2d3d] rounded-2xl p-12 border border-gray-600 max-w-md mx-auto">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-3">아직 만든 퀴즈가 없습니다</h2>
+                <p class="text-gray-400 mb-6">첫 퀴즈를 만들어 친구들과 함께 즐겨보세요!</p>
+            </div>
+        </div>
+
+        <!-- 퀴즈 목록 섹션 -->
+        <div id="quizListSection" class="hidden">
+            <!-- 퀴즈 카드 그리드 -->
+            <div id="quizList" class="grid grid-auto-fit gap-6">
+                <!-- 퀴즈 카드들이 여기에 동적으로 추가됩니다 -->
+            </div>
+        </div>
+
+        <!-- 에러 상태 -->
+        <div id="errorSection" class="hidden text-center py-16">
+            <div class="bg-red-500/10 border border-red-500/20 rounded-2xl p-12 max-w-md mx-auto">
+                <h2 class="text-2xl font-bold text-red-400 mb-3">오류가 발생했습니다</h2>
+                <p class="text-gray-400 mb-6">퀴즈 목록을 불러올 수 없습니다.</p>
+                <button 
+                    onclick="window.location.reload()" 
+                    class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-colors"
+                >
+                    다시 시도
+                </button>
+            </div>
+        </div>
+            </div>
+        </main>
+
+        <!-- 우측 광고 영역 (xl 이상에서만 표시) -->
+        <aside class="hidden xl:flex xl:w-[160px] xl:justify-center sticky top-20 self-start">
+            <!-- 카카오 애드핏 광고 -->
+            <ins class="kakao_ad_area"
+                 style="display:none;"
+                 data-ad-unit="DAN-gnEAmPkmPaZvFnB6"
+                 data-ad-width="160"
+                 data-ad-height="600">
+            </ins>
+        </aside>
+    </div>
+    <!-- 3단 레이아웃 래퍼 끝 -->
+
+    <!-- 수정/삭제 모달 -->
+    <div id="editModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50" onclick="closeEditModal()">
+        <div class="bg-[#2d2d3d] rounded-2xl p-8 max-w-md w-full mx-4 border border-gray-600" onclick="event.stopPropagation()">
+            <h3 class="text-2xl font-bold text-white mb-6">퀴즈 수정</h3>
+            
+            <div class="space-y-4 mb-6">
+                <!-- 썸네일 이미지 섹션 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">썸네일 이미지</label>
+                    
+                    <!-- 현재 썸네일 미리보기 -->
+                    <div id="editThumbnailPreview" class="mb-3">
+                        <img id="editThumbnailImage" 
+                            alt="썸네일 미리보기"
+                            class="w-full h-48 object-cover rounded-lg border-2 border-gray-600">
+                    </div>
+                    
+                    <!-- 이미지 변경 버튼 -->
+                    <label class="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg cursor-pointer transition-colors border border-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span>이미지 변경</span>
+                        <input 
+                            type="file" 
+                            id="editThumbnailInput" 
+                            accept="image/*" 
+                            onchange="handleEditThumbnailChange(event)"
+                            class="hidden">
+                    </label>
+                    <p class="text-xs text-gray-400 mt-1">권장: 16:9 비율, 최대 6MB</p>
+                </div>
+                
+                <!-- 제목 입력 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">퀴즈 제목</label>
+                    <input 
+                        type="text" 
+                        id="editTitle" 
+                        class="w-full px-4 py-2 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                        placeholder="퀴즈 제목을 입력하세요"
+                    >
+                </div>
+                
+                <!-- 설명 입력 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">퀴즈 설명</label>
+                    <textarea
+                        id="editDescription"
+                        rows="3"
+                        class="w-full px-4 py-2 bg-[#3a3a4a] border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                        placeholder="퀴즈 설명을 입력하세요"
+                        maxlength="100"
+                    ></textarea>
+                </div>
+            </div>
+            
+            <div class="flex gap-3">
+                <button 
+                    onclick="saveEdit()" 
+                    class="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium py-3 rounded-xl transition-all"
+                >
+                    저장
+                </button>
+                <button 
+                    onclick="closeEditModal()" 
+                    class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 rounded-xl transition-colors"
+                >
+                    취소
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="/js/quiz-my-list.js"></script>
+</body>
+</html>
