@@ -53,9 +53,6 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # ECR 로그인
-            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 925216255375.dkr.ecr.ap-northeast-2.amazonaws.com
-
             # 이미지 업데이트 및 롤링 재시작
             kubectl set image deployment/playcode-app playcode-app=925216255375.dkr.ecr.ap-northeast-2.amazonaws.com/playcode-app:${{ github.sha }} -n playcode
 
