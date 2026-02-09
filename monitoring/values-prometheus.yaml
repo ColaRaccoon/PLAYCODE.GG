@@ -95,6 +95,7 @@ grafana:
           type: loki
           url: http://loki:3100
           access: proxy
+          isDefault: false
 
   # 대시보드 프로비저닝 (ConfigMap에서 로드)
   dashboardProviders:
