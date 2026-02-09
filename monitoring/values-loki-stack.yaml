@@ -60,3 +60,7 @@ promtail:
 
 grafana:
   enabled: false  # kube-prometheus-stack에서 이미 설치됨, 데이터소스만 추가
+
+# Loki 데이터소스의 isDefault를 false로 설정 (Prometheus가 기본 데이터소스)
+loki:
+  isDefault: false
