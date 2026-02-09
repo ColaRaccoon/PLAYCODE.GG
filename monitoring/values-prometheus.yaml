@@ -92,12 +92,7 @@ grafana:
           - grafana.playcode.gg
 
   # Prometheus 데이터소스는 Helm 차트가 자동 생성 (sidecar 기본값)
-  # Loki만 추가 데이터소스로 등록
-  additionalDataSources:
-    - name: Loki
-      type: loki
-      url: http://loki:3100
-      access: proxy
+  # Loki 데이터소스는 Grafana UI에서 수동 추가
 
   # 대시보드 프로비저닝 (ConfigMap에서 로드)
   dashboardProviders:
