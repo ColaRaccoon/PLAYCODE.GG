@@ -91,26 +91,13 @@ grafana:
         hosts:
           - grafana.playcode.gg
 
-  # Helm 차트 기본 Prometheus 데이터소스 비활성화 (수동 설정과 충돌 방지)
-  sidecar:
-    datasources:
-      defaultDatasourceEnabled: false
-
-  # 데이터소스 수동 설정
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          url: http://prometheus-kube-prometheus-prometheus:9090
-          access: proxy
-          isDefault: true
-        - name: Loki
-          type: loki
-          url: http://loki:3100
-          access: proxy
-          isDefault: false
+  # Prometheus 데이터소스는 Helm 차트가 자동 생성 (sidecar 기본값)
+  # Loki만 추가 데이터소스로 등록
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki:3100
+      access: proxy
 
   # 대시보드 프로비저닝 (ConfigMap에서 로드)
   dashboardProviders:
