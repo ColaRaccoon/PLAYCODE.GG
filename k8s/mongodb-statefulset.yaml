@@ -9,6 +9,7 @@ metadata:
   name: mongodb-pvc
   namespace: playcode
 spec:
+  storageClassName: local-path
   accessModes:
     - ReadWriteOnce
   resources:
