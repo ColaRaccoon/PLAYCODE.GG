@@ -19,6 +19,8 @@ const s3Routes = require('./routes/S3Routes');
 const portfolioRoutes = require('./routes/PortfolioRoutes');
 const authenticateToken = require('./middlewares/AuthMiddleware');
 const quizApiRoutesFactory = require('./routes/QuizApiRoutes');
+const { register, metricsMiddleware, websocketConnectionsGauge } = require('./utils/metrics');
+const { logger, httpLogger } = require('./utils/logger');
 
 
 const app = express();
@@ -52,10 +54,18 @@ const subClient = pubClient.duplicate();
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
   io.adapter(createAdapter(pubClient, subClient));
-  console.log('✅ Redis adapter connected');
+  logger.info('Redis adapter connected');
 }).catch((err) => {
-  console.error('❌ Redis connection failed:', err);
-  console.log('⚠️ Running without Redis adapter (single process mode)');
+  logger.error({ err }, 'Redis connection failed');
+  logger.warn('Running without Redis adapter (single process mode)');
+});
+
+// WebSocket 연결 수 메트릭 추적
+io.on('connection', (socket) => {
+  websocketConnectionsGauge.inc();
+  socket.on('disconnect', () => {
+    websocketConnectionsGauge.dec();
+  });
 });
 
 const PORT = process.env.PORT || 3000;
@@ -90,6 +100,18 @@ app.use(express.static(path.join(__dirname, 'public'), {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
+
+// Prometheus 메트릭 미들웨어 (Rate Limiter보다 먼저 적용하여 모든 요청 측정)
+app.use(metricsMiddleware);
+
+// 구조화된 HTTP 요청 로깅 (Loki 수집용)
+app.use(httpLogger);
+
+// Prometheus 메트릭 엔드포인트
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
 
 // Rate Limiting 설정
 // 1. 전역 제한: 모든 요청에 적용 (느슨하게)
@@ -219,7 +241,7 @@ connectDB().then(({ userDb, quizDb }) => {
         userAgent: req.headers['user-agent'],
         userId: req.user?.id || null
       }).catch(error => {
-        console.error('Access log error:', error);
+        logger.error({ err: error }, 'Access log error');
       });
     });
 
@@ -328,7 +350,7 @@ connectDB().then(({ userDb, quizDb }) => {
       res.send(html);
 
     } catch (error) {
-      console.error('퀴즈 메타 태그 생성 실패:', error);
+      logger.error({ err: error, quizId }, '퀴즈 메타 태그 생성 실패');
       // 에러 발생 시 기본 HTML 제공
       res.sendFile(path.join(__dirname, 'public', 'index.html'));
     }
@@ -355,7 +377,7 @@ connectDB().then(({ userDb, quizDb }) => {
 
   // 500 핸들러 - 서버 에러 처리
   app.use((err, req, res, next) => {
-    console.error('Server error:', err);
+    logger.error({ err, path: req.path, method: req.method }, 'Server error');
 
     if (process.env.NODE_ENV === 'production') {
       // 프로덕션: 에러 정보 숨김
@@ -369,10 +391,10 @@ connectDB().then(({ userDb, quizDb }) => {
 
   // 서버 시작
   server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    logger.info({ port: PORT }, `Server is running on http://localhost:${PORT}`);
   });
 
 }).catch(err => {
-  console.error('DB 연결 실패:', err);
+  logger.fatal({ err }, 'DB 연결 실패');
   process.exit(1);
 });

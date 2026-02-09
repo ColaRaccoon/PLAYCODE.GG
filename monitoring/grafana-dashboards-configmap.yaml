@@ -1,0 +1,539 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-playcode
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  playcode-app.json: |
+    {
+      "annotations": { "list": [] },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "links": [],
+      "panels": [
+        {
+          "title": "HTTP 요청 처리율 (req/s)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "targets": [
+            {
+              "expr": "sum(rate(http_requests_total{job=\"playcode-app\"}[5m])) by (method)",
+              "legendFormat": "{{method}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "HTTP 응답 상태 코드 분포",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+          "targets": [
+            {
+              "expr": "sum(rate(http_requests_total{job=\"playcode-app\"}[5m])) by (status_code)",
+              "legendFormat": "{{status_code}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "custom": { "drawStyle": "bars", "fillOpacity": 50 }
+            }
+          }
+        },
+        {
+          "title": "HTTP 요청 지연시간 (p50 / p95 / p99)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"playcode-app\"}[5m])) by (le))",
+              "legendFormat": "p50"
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"playcode-app\"}[5m])) by (le))",
+              "legendFormat": "p95"
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"playcode-app\"}[5m])) by (le))",
+              "legendFormat": "p99"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "WebSocket 활성 연결 수",
+          "type": "stat",
+          "gridPos": { "h": 8, "w": 6, "x": 12, "y": 8 },
+          "targets": [
+            {
+              "expr": "websocket_connections_active{job=\"playcode-app\"}",
+              "legendFormat": "연결 수"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 50 },
+                  { "color": "red", "value": 100 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "활성 게임 세션 수",
+          "type": "stat",
+          "gridPos": { "h": 8, "w": 6, "x": 18, "y": 8 },
+          "targets": [
+            {
+              "expr": "game_sessions_active{job=\"playcode-app\"}",
+              "legendFormat": "세션 수"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 10 },
+                  { "color": "red", "value": 25 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "활성 플레이어 수",
+          "type": "gauge",
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 16 },
+          "targets": [
+            {
+              "expr": "game_players_active{job=\"playcode-app\"}",
+              "legendFormat": "플레이어"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "min": 0,
+              "max": 100,
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 30 },
+                  { "color": "red", "value": 60 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "게임 세션 생성 추이",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 16 },
+          "targets": [
+            {
+              "expr": "rate(game_sessions_created_total{job=\"playcode-app\"}[5m])",
+              "legendFormat": "세션 생성/s"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "fillOpacity": 20 }
+            }
+          }
+        },
+        {
+          "title": "인증 시도 (성공/실패)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 16 },
+          "targets": [
+            {
+              "expr": "sum(rate(auth_attempts_total{job=\"playcode-app\", result=\"success\"}[5m])) by (method)",
+              "legendFormat": "성공 - {{method}}"
+            },
+            {
+              "expr": "sum(rate(auth_attempts_total{job=\"playcode-app\", result=\"failure\"}[5m])) by (method)",
+              "legendFormat": "실패 - {{method}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ops",
+              "custom": { "drawStyle": "bars", "fillOpacity": 50 }
+            }
+          }
+        },
+        {
+          "title": "Node.js 메모리 사용량",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+          "targets": [
+            {
+              "expr": "nodejs_heap_size_used_bytes{job=\"playcode-app\"} / 1024 / 1024",
+              "legendFormat": "Heap Used (MB)"
+            },
+            {
+              "expr": "nodejs_heap_size_total_bytes{job=\"playcode-app\"} / 1024 / 1024",
+              "legendFormat": "Heap Total (MB)"
+            },
+            {
+              "expr": "process_resident_memory_bytes{job=\"playcode-app\"} / 1024 / 1024",
+              "legendFormat": "RSS (MB)"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "decmbytes",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "Node.js 이벤트 루프 지연시간",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+          "targets": [
+            {
+              "expr": "rate(nodejs_eventloop_lag_seconds{job=\"playcode-app\"}[5m])",
+              "legendFormat": "Event Loop Lag"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": ["playcode", "application"],
+      "templating": { "list": [] },
+      "time": { "from": "now-1h", "to": "now" },
+      "title": "PlayCode - Application Metrics",
+      "uid": "playcode-app"
+    }
+  playcode-infra.json: |
+    {
+      "annotations": { "list": [] },
+      "editable": true,
+      "panels": [
+        {
+          "title": "Pod CPU 사용률",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"playcode\", container!=\"\"}[5m])) by (pod)",
+              "legendFormat": "{{pod}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "Pod 메모리 사용량",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+          "targets": [
+            {
+              "expr": "sum(container_memory_working_set_bytes{namespace=\"playcode\", container!=\"\"}) by (pod) / 1024 / 1024",
+              "legendFormat": "{{pod}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "decmbytes",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "Pod 재시작 횟수",
+          "type": "stat",
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+          "targets": [
+            {
+              "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"playcode\"}) by (pod)",
+              "legendFormat": "{{pod}}"
+            }
+          ]
+        },
+        {
+          "title": "HPA Replicas",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
+          "targets": [
+            {
+              "expr": "kube_horizontalpodautoscaler_status_current_replicas{namespace=\"playcode\"}",
+              "legendFormat": "현재"
+            },
+            {
+              "expr": "kube_horizontalpodautoscaler_status_desired_replicas{namespace=\"playcode\"}",
+              "legendFormat": "목표"
+            }
+          ]
+        },
+        {
+          "title": "네트워크 I/O",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
+          "targets": [
+            {
+              "expr": "sum(rate(container_network_receive_bytes_total{namespace=\"playcode\"}[5m])) by (pod) / 1024",
+              "legendFormat": "수신 - {{pod}}"
+            },
+            {
+              "expr": "sum(rate(container_network_transmit_bytes_total{namespace=\"playcode\"}[5m])) by (pod) / 1024",
+              "legendFormat": "송신 - {{pod}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "KBs",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "디스크 사용량 (PVC)",
+          "type": "gauge",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+          "targets": [
+            {
+              "expr": "kubelet_volume_stats_used_bytes{namespace=\"playcode\"} / kubelet_volume_stats_capacity_bytes{namespace=\"playcode\"}",
+              "legendFormat": "{{persistentvolumeclaim}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "min": 0,
+              "max": 1,
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 0.7 },
+                  { "color": "red", "value": 0.9 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "노드 CPU / 메모리 사용률",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+          "targets": [
+            {
+              "expr": "1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m]))",
+              "legendFormat": "CPU 사용률"
+            },
+            {
+              "expr": "1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)",
+              "legendFormat": "메모리 사용률"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": ["playcode", "infrastructure"],
+      "time": { "from": "now-1h", "to": "now" },
+      "title": "PlayCode - Infrastructure",
+      "uid": "playcode-infra"
+    }
+  playcode-db.json: |
+    {
+      "annotations": { "list": [] },
+      "editable": true,
+      "panels": [
+        {
+          "title": "MongoDB 연결 수",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "targets": [
+            {
+              "expr": "mongodb_ss_connections{conn_type=\"current\"}",
+              "legendFormat": "현재 연결"
+            },
+            {
+              "expr": "mongodb_ss_connections{conn_type=\"available\"}",
+              "legendFormat": "가용 연결"
+            }
+          ]
+        },
+        {
+          "title": "MongoDB 작업 처리율",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+          "targets": [
+            {
+              "expr": "rate(mongodb_ss_opcounters{legacy_op_type=\"insert\"}[5m])",
+              "legendFormat": "Insert/s"
+            },
+            {
+              "expr": "rate(mongodb_ss_opcounters{legacy_op_type=\"query\"}[5m])",
+              "legendFormat": "Query/s"
+            },
+            {
+              "expr": "rate(mongodb_ss_opcounters{legacy_op_type=\"update\"}[5m])",
+              "legendFormat": "Update/s"
+            },
+            {
+              "expr": "rate(mongodb_ss_opcounters{legacy_op_type=\"delete\"}[5m])",
+              "legendFormat": "Delete/s"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ops",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "MongoDB 메모리 사용량",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+          "targets": [
+            {
+              "expr": "mongodb_ss_mem_resident / 1024 / 1024",
+              "legendFormat": "Resident (MB)"
+            },
+            {
+              "expr": "mongodb_ss_mem_virtual / 1024 / 1024",
+              "legendFormat": "Virtual (MB)"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "decmbytes",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "MongoDB 스토리지 크기",
+          "type": "stat",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+          "targets": [
+            {
+              "expr": "mongodb_dbstats_dataSize{} / 1024 / 1024",
+              "legendFormat": "{{database}} 데이터"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": { "unit": "decmbytes" }
+          }
+        },
+        {
+          "title": "Redis 메모리 사용량",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+          "targets": [
+            {
+              "expr": "redis_memory_used_bytes / 1024 / 1024",
+              "legendFormat": "Used Memory (MB)"
+            },
+            {
+              "expr": "redis_memory_max_bytes / 1024 / 1024",
+              "legendFormat": "Max Memory (MB)"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "decmbytes",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        },
+        {
+          "title": "Redis 연결 수 / 명령 처리율",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+          "targets": [
+            {
+              "expr": "redis_connected_clients",
+              "legendFormat": "연결 클라이언트"
+            },
+            {
+              "expr": "rate(redis_commands_processed_total[5m])",
+              "legendFormat": "명령/s"
+            }
+          ]
+        },
+        {
+          "title": "Redis 히트율",
+          "type": "gauge",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+          "targets": [
+            {
+              "expr": "redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total)",
+              "legendFormat": "히트율"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "min": 0,
+              "max": 1,
+              "thresholds": {
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "yellow", "value": 0.8 },
+                  { "color": "green", "value": 0.95 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "앱 DB 쿼리 지연시간 (p95)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(db_query_duration_seconds_bucket{job=\"playcode-app\"}[5m])) by (le, collection))",
+              "legendFormat": "{{collection}} p95"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "custom": { "drawStyle": "line", "fillOpacity": 10 }
+            }
+          }
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": ["playcode", "database"],
+      "time": { "from": "now-1h", "to": "now" },
+      "title": "PlayCode - Database Metrics",
+      "uid": "playcode-db"
+    }

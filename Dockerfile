@@ -36,9 +36,6 @@ RUN npm ci --omit=dev
 COPY --from=builder --chown=nodejs:nodejs /app/public ./public
 COPY --chown=nodejs:nodejs . .
 
-# PM2를 글로벌로 설치 (프로세스 관리용)
-RUN npm install -g pm2
-
 # 로그 디렉토리 생성 및 권한 설정
 RUN mkdir -p /app/logs && chown -R nodejs:nodejs /app/logs
 
@@ -52,5 +49,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); })"
 
-# PM2로 애플리케이션 실행
-CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+# Node.js로 직접 실행 (스케일링/재시작은 K8s가 관리)
+CMD ["node", "app.js"]

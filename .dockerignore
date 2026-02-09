@@ -51,9 +51,9 @@ kubernetes
 *.yaml
 *.yml
 
-# PM2
+# PM2 (제거됨 - K8s가 프로세스 관리)
 .pm2
-# ecosystem.config.js는 PM2 실행에 필요하므로 포함
+ecosystem.config.js
 
 # Claude
 .claude

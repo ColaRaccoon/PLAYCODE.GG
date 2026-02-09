@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: playcode-app-monitor
+  namespace: playcode
+  labels:
+    app: playcode-app
+    release: prometheus  # kube-prometheus-stack가 이 라벨로 ServiceMonitor 탐색
+spec:
+  selector:
+    matchLabels:
+      app: playcode-app
+  namespaceSelector:
+    matchNames:
+      - playcode
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s         # 15초마다 메트릭 수집
+      scrapeTimeout: 10s

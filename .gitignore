@@ -10,6 +10,7 @@ dist/
 
 # Claude Code 설정
 .claude/
+CLAUDE.local.md
 
 # macOS/Linux 불필요한 파일
 .DS_Store
@@ -17,3 +18,16 @@ dist/
 # Kubernetes secrets (민감 정보)
 k8s/secret.yaml
 k8s/configmap.yaml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+*.auto.tfvars
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

@@ -1,3 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  namespace: playcode
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,9 +31,19 @@ spec:
       containers:
       - name: redis
         image: redis:7-alpine
+        # AOF(Append Only File) 영속성 활성화
+        command:
+          - redis-server
+          - --appendonly yes             # AOF 활성화
+          - --appendfsync everysec       # 1초마다 디스크에 동기화 (성능/안정성 균형)
+          - --maxmemory 200mb            # 최대 메모리 제한
+          - --maxmemory-policy allkeys-lru  # 메모리 초과 시 LRU 정책
         ports:
         - containerPort: 6379
           name: redis
+        volumeMounts:
+          - name: redis-data
+            mountPath: /data
         resources:
           requests:
             memory: "128Mi"
@@ -44,6 +67,10 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
           timeoutSeconds: 2
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: redis-pvc
 
 ---
 apiVersion: v1
