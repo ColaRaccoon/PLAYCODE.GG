@@ -7,14 +7,14 @@
 
 prometheus:
   prometheusSpec:
-    # EC2 단일 노드 환경에 맞는 리소스 설정
+    # EC2 단일 노드 환경에 맞는 리소스 설정 (경량화)
     resources:
       requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
         memory: "512Mi"
         cpu: "250m"
-      limits:
-        memory: "1Gi"
-        cpu: "500m"
 
     # 데이터 보존 기간
     retention: 15d
@@ -53,11 +53,11 @@ grafana:
 
   resources:
     requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
       memory: "128Mi"
       cpu: "100m"
-    limits:
-      memory: "256Mi"
-      cpu: "200m"
 
   # 영구 저장소 (대시보드/설정 유지)
   persistence:
@@ -118,11 +118,11 @@ alertmanager:
   alertmanagerSpec:
     resources:
       requests:
+        memory: "32Mi"
+        cpu: "25m"
+      limits:
         memory: "64Mi"
         cpu: "50m"
-      limits:
-        memory: "128Mi"
-        cpu: "100m"
 
 # 불필요한 컴포넌트 비활성화 (EC2 단일 노드 리소스 절약)
 kubeEtcd:
