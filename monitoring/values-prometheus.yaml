@@ -59,6 +59,16 @@ grafana:
       memory: "128Mi"
       cpu: "100m"
 
+  # init-chown-data 비활성화 (local-path-provisioner 권한 호환)
+  initChownData:
+    enabled: false
+
+  # Pod 보안 컨텍스트 (볼륨 접근 권한)
+  securityContext:
+    runAsUser: 472
+    runAsGroup: 472
+    fsGroup: 472
+
   # 영구 저장소 (대시보드/설정 유지)
   persistence:
     enabled: true
