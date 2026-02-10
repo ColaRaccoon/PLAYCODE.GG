@@ -1987,8 +1987,8 @@ function setupSocketListeners() {
             return;
         }
 
-        // 퀴즈 종료 화면 표시 (제작자 정보 포함)
-        showGameEndScreen(data.players, data.creatorNickname);
+        // 퀴즈 종료 화면 표시 (제작자 정보 + 퍼센타일 포함)
+        showGameEndScreen(data.players, data.creatorNickname, data.percentileThresholds);
     });
 
     socket.on('forceRedirect', (data) => {
@@ -1998,7 +1998,7 @@ function setupSocketListeners() {
 }
 
 // 퀴즈 종료 화면 표시
-function showGameEndScreen(players, creatorNickname) {
+function showGameEndScreen(players, creatorNickname, percentileThresholds) {
     // 유튜브 플레이어 정지 및 제거
     if (youtubePlayer) {
         try {
@@ -2039,11 +2039,11 @@ function showGameEndScreen(players, creatorNickname) {
     }
 
     // 최종 순위 렌더링
-    renderFinalRanking(players);
+    renderFinalRanking(players, percentileThresholds);
 }
 
 // 최종 순위 렌더링
-function renderFinalRanking(players) {
+function renderFinalRanking(players, percentileThresholds) {
     const rankingList = document.getElementById('finalRankingList');
     rankingList.innerHTML = '';
 
@@ -2056,6 +2056,24 @@ function renderFinalRanking(players) {
     sortedPlayers.forEach((player, index) => {
         const rank = index + 1;
         const displayName = player.nickname || 'Unknown';
+
+        // 퍼센타일 계산 (임계값이 있을 때만)
+        if (percentileThresholds) {
+            const correctCount = player.correctAnswersCount || 0;
+            if (correctCount >= percentileThresholds.top1) {
+                player.percentile = '상위 1%';
+            } else if (correctCount >= percentileThresholds.top3) {
+                player.percentile = '상위 3%';
+            } else if (correctCount >= percentileThresholds.top5) {
+                player.percentile = '상위 5%';
+            } else if (correctCount >= percentileThresholds.top10) {
+                player.percentile = '상위 10%';
+            } else if (correctCount >= percentileThresholds.top30) {
+                player.percentile = '상위 30%';
+            } else if (correctCount >= percentileThresholds.top50) {
+                player.percentile = '상위 50%';
+            }
+        }
 
         // 1등, 2등, 3등에 특별한 스타일 적용
         let rankBadgeClass = '';
