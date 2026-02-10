@@ -201,6 +201,15 @@ router.post('/start', optionalAuthenticateToken, async (req, res) => {
       throw new Error('Failed to generate a unique invite code after several attempts.');
     }
 
+    // 게임 활동 기록 (실패해도 게임 진행에 영향 없음)
+    try {
+      const GameActivity = require('../models/GameActivity')(quizDb);
+      const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.connection.remoteAddress || '';
+      await GameActivity.create({ type: 'session_created', ip, sessionId: session._id });
+    } catch (activityErr) {
+      console.error('GameActivity 기록 실패 (session_created):', activityErr.message);
+    }
+
     res.status(201).json({
       message: 'Game session created successfully',
       sessionId: session._id,
@@ -301,6 +310,15 @@ router.post('/join', optionalAuthenticateToken, async (req, res) => {
       },
       { new: true }
     );
+
+    // 게임 활동 기록 (실패해도 게임 진행에 영향 없음)
+    try {
+      const GameActivity = require('../models/GameActivity')(quizDb);
+      const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.connection.remoteAddress || '';
+      await GameActivity.create({ type: 'session_joined', ip, sessionId: updatedSession._id });
+    } catch (activityErr) {
+      console.error('GameActivity 기록 실패 (session_joined):', activityErr.message);
+    }
 
     res.status(200).json({
       message: '세션에 성공적으로 참여했습니다.',

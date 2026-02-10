@@ -861,6 +861,59 @@ router.patch('/users/:userId/nickname', async (req, res) => {
   }
 });
 
+// ========== 게임 활동 통계 API ==========
+
+// 게임 활동 통계 조회
+router.get('/stats/game', async (req, res) => {
+  try {
+    const GameActivity = require('../models/GameActivity')(req.app.get('quizDb'));
+
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const cutoffs = [
+      { key: 'daily', since: oneDayAgo },
+      { key: 'threeDays', since: threeDaysAgo },
+      { key: 'weekly', since: weekAgo },
+      { key: 'monthly', since: monthAgo }
+    ];
+
+    // 4개 기간 x 3개 쿼리 = 12개 쿼리 병렬 실행
+    const queries = cutoffs.flatMap(({ since }) => [
+      GameActivity.countDocuments({ type: 'session_created', timestamp: { $gte: since } }),
+      GameActivity.countDocuments({ type: 'game_completed', timestamp: { $gte: since } }),
+      GameActivity.distinct('ip', {
+        type: { $in: ['session_created', 'session_joined'] },
+        timestamp: { $gte: since },
+        ip: { $ne: null }
+      })
+    ]);
+
+    const results = await Promise.all(queries);
+
+    const gameStats = {};
+    cutoffs.forEach(({ key }, i) => {
+      const base = i * 3;
+      gameStats[key] = {
+        sessionsCreated: results[base],
+        gamesCompleted: results[base + 1],
+        uniquePlayers: results[base + 2].length
+      };
+    });
+
+    res.json({ success: true, gameStats });
+  } catch (err) {
+    console.error('Game stats load error:', err);
+    res.status(500).json({
+      success: false,
+      message: '게임 활동 통계를 불러오는데 실패했습니다.'
+    });
+  }
+});
+
 // ========== 접속 통계 API ==========
 
 // 퀴즈 이미지 조회 (호버링 시 사용)

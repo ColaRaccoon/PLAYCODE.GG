@@ -4,11 +4,14 @@ let autoRefreshInterval = null;
 let isAutoRefreshEnabled = true; // 기본값: 자동 갱신 활성화
 let currentLogFilter = 'user'; // 기본값: 유저만 보기 ('user' | 'all')
 let cachedDebugData = null; // 디버그 데이터 캐싱
+let cachedGameStats = null; // 게임 통계 데이터 캐싱
+let currentGameStatsPeriod = 'daily'; // 기본 기간: 24시간
 
 document.addEventListener('DOMContentLoaded', function() {
   loadStats();
   loadDebugInfo();
   loadServerResources();
+  loadGameStats();
 
   // 자동 갱신 시작 (30초마다)
   startAutoRefresh();
@@ -227,6 +230,7 @@ function startAutoRefresh() {
         loadStats();
         loadDebugInfo();
         loadServerResources();
+        loadGameStats();
       }
     }, 15000); // 15초마다
   }
@@ -288,6 +292,7 @@ function handleVisibilityChange() {
     loadStats();
     loadDebugInfo();
     loadServerResources();
+    loadGameStats();
   }
 }
 
@@ -422,6 +427,7 @@ function displayServerResources(resources) {
 // 전역 함수로 등록
 window.toggleAutoRefresh = toggleAutoRefresh;
 window.setLogFilter = setLogFilter;
+window.switchGameStatsPeriod = switchGameStatsPeriod;
 
 function displayDebugInfo(data) {
   // 데이터 캐싱 (필터 변경 시 재사용)
@@ -539,4 +545,58 @@ function updateLogFilterButtons() {
       allBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
     }
   }
+}
+
+// ========== 게임 활동 통계 ==========
+
+async function loadGameStats() {
+  try {
+    const response = await fetch('/admin/stats/game', {
+      method: 'GET',
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      throw new Error('게임 통계를 불러오는데 실패했습니다.');
+    }
+
+    const data = await response.json();
+
+    if (data.success) {
+      cachedGameStats = data.gameStats;
+      displayGameStats();
+    }
+  } catch (error) {
+    console.error('Game stats load error:', error);
+  }
+}
+
+function displayGameStats() {
+  if (!cachedGameStats) return;
+
+  const stats = cachedGameStats[currentGameStatsPeriod];
+  if (!stats) return;
+
+  document.getElementById('gameSessionsCreated').textContent = (stats.sessionsCreated || 0).toLocaleString();
+  document.getElementById('gameGamesCompleted').textContent = (stats.gamesCompleted || 0).toLocaleString();
+  document.getElementById('gameUniquePlayers').textContent = (stats.uniquePlayers || 0).toLocaleString();
+}
+
+function switchGameStatsPeriod(period) {
+  currentGameStatsPeriod = period;
+
+  // 탭 버튼 스타일 업데이트
+  const tabs = document.querySelectorAll('.game-stats-tab');
+  tabs.forEach(tab => {
+    if (tab.dataset.period === period) {
+      tab.classList.remove('bg-gray-700', 'text-gray-300');
+      tab.classList.add('bg-blue-600', 'text-white');
+    } else {
+      tab.classList.remove('bg-blue-600', 'text-white');
+      tab.classList.add('bg-gray-700', 'text-gray-300');
+    }
+  });
+
+  // 캐시된 데이터로 즉시 재렌더링
+  displayGameStats();
 }

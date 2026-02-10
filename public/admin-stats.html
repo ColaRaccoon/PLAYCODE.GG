@@ -144,6 +144,37 @@
         </div>
       </div>
 
+      <!-- 게임 활동 통계 -->
+      <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600 mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-200">게임 활동 통계</h2>
+          <div class="flex gap-2" id="gameStatsTabs">
+            <button onclick="switchGameStatsPeriod('daily')" data-period="daily" class="game-stats-tab bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">24시간</button>
+            <button onclick="switchGameStatsPeriod('threeDays')" data-period="threeDays" class="game-stats-tab bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">3일</button>
+            <button onclick="switchGameStatsPeriod('weekly')" data-period="weekly" class="game-stats-tab bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">7일</button>
+            <button onclick="switchGameStatsPeriod('monthly')" data-period="monthly" class="game-stats-tab bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">30일</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-1">생성된 세션 수</div>
+            <div class="text-white text-2xl font-bold" id="gameSessionsCreated">-</div>
+          </div>
+
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-1">완료된 게임 수</div>
+            <div class="text-white text-2xl font-bold" id="gameGamesCompleted">-</div>
+          </div>
+
+          <div class="bg-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-400 text-sm mb-1">고유 플레이어 수</div>
+            <div class="text-white text-2xl font-bold" id="gameUniquePlayers">-</div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- 서버 리소스 모니터링 -->
       <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600 mb-8">
         <h2 class="text-xl font-bold mb-4 text-gray-200">🖥️ 서버 리소스 (EC2 실시간 현황)</h2>

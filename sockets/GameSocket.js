@@ -1755,6 +1755,14 @@ module.exports = (io, app, redisClient) => {
           { $inc: { completedGameCount: 1 } }
         );
 
+        // 게임 활동 기록 (실패해도 게임 로직에 영향 없음)
+        try {
+          const GameActivity = require('../models/GameActivity')(quizDb);
+          await GameActivity.create({ type: 'game_completed', sessionId });
+        } catch (activityErr) {
+          console.error('GameActivity 기록 실패 (game_completed):', activityErr.message);
+        }
+
         // 세션 관련 캐시 정리 (메모리 누수 방지)
         if (sessionUserCache.has(sessionId)) {
           sessionUserCache.delete(sessionId);
