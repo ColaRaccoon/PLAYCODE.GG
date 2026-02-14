@@ -148,11 +148,13 @@
       <div class="bg-black/30 rounded-2xl p-6 shadow-xl border border-gray-600 mb-8">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-gray-200">게임 활동 통계</h2>
-          <div class="flex gap-2" id="gameStatsTabs">
+          <div class="flex flex-wrap gap-2" id="gameStatsTabs">
             <button onclick="switchGameStatsPeriod('daily')" data-period="daily" class="game-stats-tab bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">24시간</button>
             <button onclick="switchGameStatsPeriod('threeDays')" data-period="threeDays" class="game-stats-tab bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">3일</button>
             <button onclick="switchGameStatsPeriod('weekly')" data-period="weekly" class="game-stats-tab bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">7일</button>
             <button onclick="switchGameStatsPeriod('monthly')" data-period="monthly" class="game-stats-tab bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">30일</button>
+            <button onclick="switchGameStatsPeriod('sixMonths')" data-period="sixMonths" class="game-stats-tab bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">180일</button>
+            <button onclick="switchGameStatsPeriod('yearly')" data-period="yearly" class="game-stats-tab bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors">365일</button>
           </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

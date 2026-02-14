@@ -873,12 +873,16 @@ router.get('/stats/game', async (req, res) => {
     const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+    const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
 
     const cutoffs = [
       { key: 'daily', since: oneDayAgo },
       { key: 'threeDays', since: threeDaysAgo },
       { key: 'weekly', since: weekAgo },
-      { key: 'monthly', since: monthAgo }
+      { key: 'monthly', since: monthAgo },
+      { key: 'sixMonths', since: sixMonthsAgo },
+      { key: 'yearly', since: yearAgo }
     ];
 
     // 4개 기간 x 3개 쿼리 = 12개 쿼리 병렬 실행

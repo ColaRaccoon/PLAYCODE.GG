@@ -20,10 +20,10 @@ const gameActivitySchema = new mongoose.Schema({
   }
 });
 
-// 31일 TTL (30일 + 1일 여유)
-gameActivitySchema.index({ timestamp: 1 }, { expireAfterSeconds: 31 * 24 * 60 * 60 });
+// TTL: keep data for up to 366 days so 365-day stats are queryable.
+gameActivitySchema.index({ timestamp: 1 }, { expireAfterSeconds: 366 * 24 * 60 * 60 });
 
-// 쿼리 최적화 (타입 + 기간 검색)
+// Compound index for activity type filtering within a period.
 gameActivitySchema.index({ type: 1, timestamp: 1 });
 
 module.exports = (connection) => {
