@@ -82,7 +82,7 @@ module.exports = (io, app, redisClient) => {
           }
 
           return redisCount;
-        }
+      }
       } catch (redisErr) {
         console.error('Redis 카운터 조회 실패:', redisErr);
       }
@@ -98,25 +98,69 @@ module.exports = (io, app, redisClient) => {
   const Quiz = require('../models/Quiz')(quizDb);
   const QuizRecord = require('../models/QuizRecord')(quizDb);
   const User = require('../models/User')(userDb);
+  const Recommendation = require('../models/Recommendation')(quizDb);
   const sessionUserCache = new Map();
+  const sessionUserCacheTouchedAt = new Map();
+  const sessionRevealCache = new Map();
   const disconnectTimers = new Map(); // 사용자별 disconnect 타이머 저장
   const { safeFindSessionById, safeSaveSession } = require('../utils/sessionHelpers');
   const { ObjectId } = require('mongoose').Types;
 
+  function touchSessionCache(sessionId) {
+    sessionUserCacheTouchedAt.set(sessionId, Date.now());
+  }
+
+  function clearSessionRuntimeCaches(sessionId) {
+    sessionUserCache.delete(sessionId);
+    sessionUserCacheTouchedAt.delete(sessionId);
+    sessionRevealCache.delete(sessionId);
+  }
+
+  function buildRevealCacheFromQuiz(quiz) {
+    if (!quiz) return null;
+    const quizObj = quiz.toObject ? quiz.toObject() : quiz;
+    return {
+      creatorNickname: quizObj.creatorNickname || 'Unknown',
+      questions: (quizObj.questions || []).map((q) => ({
+        answers: q.answers || [],
+        answerImage: q.answerImageBase64 || null
+      }))
+    };
+  }
+
+  async function getRevealData(sessionId, quizId, questionIndex) {
+    let cache = sessionRevealCache.get(sessionId);
+
+    if (!cache) {
+      const quiz = await Quiz.findById(quizId)
+        .select('creatorNickname questions.answers questions.answerImageBase64')
+        .lean();
+      if (!quiz) return null;
+      cache = buildRevealCacheFromQuiz(quiz);
+      sessionRevealCache.set(sessionId, cache);
+    }
+
+    const question = cache.questions?.[questionIndex];
+    if (!question) return null;
+
+    return {
+      creatorNickname: cache.creatorNickname,
+      answers: question.answers,
+      answerImage: question.answerImage
+    };
+  }
+
   // 🛡️ 30분마다 오래된 세션 캐시 정리 (메모리 누수 방지)
   setInterval(() => {
     const now = Date.now();
-    const THIRTY_MINUTES = 30 * 60 * 1000;
+    const SESSION_CACHE_TTL_MS = 3 * 60 * 60 * 1000;
 
-    for (const [sessionId] of sessionUserCache.entries()) {
+    for (const [sessionId, touchedAt] of sessionUserCacheTouchedAt.entries()) {
       // 세션이 DB에 없거나 3시간 TTL로 만료되었다면 캐시에서 삭제
-      GameSession.findById(sessionId).then(session => {
-        if (!session) {
-          sessionUserCache.delete(sessionId);
+      if (now - touchedAt > SESSION_CACHE_TTL_MS) {
+        clearSessionRuntimeCaches(sessionId);
         }
-      }).catch(err => {
         // DB 조회 실패 시 무시
-      });
     }
 
   }, 30 * 60 * 1000); // 30분마다 실행
@@ -177,6 +221,7 @@ module.exports = (io, app, redisClient) => {
 
         let session = await safeFindSessionById(GameSession, sessionId);
         if (!session) return;
+        touchSessionCache(sessionId);
 
         // 최대 인원 체크 (12명)
         const MAX_PLAYERS = 12;
@@ -343,7 +388,7 @@ module.exports = (io, app, redisClient) => {
 
         // cachedQuizData가 없으면 DB 조회 (fallback)
         if (!quizData) {
-          quiz = await Quiz.findById(session.quizId).select('title description titleImageBase64 creatorId creatorNickname completedGameCount questions recommendationCount recommendations');
+          quiz = await Quiz.findById(session.quizId).select('title description titleImageBase64 creatorId creatorNickname completedGameCount questions recommendationCount');
           quizData = {
             title: quiz?.title || '제목 없음',
             description: quiz?.description || '',
@@ -358,10 +403,12 @@ module.exports = (io, app, redisClient) => {
 
         // 추천 여부 확인 (로그인한 경우만, Quiz 문서가 필요함)
         if (!socket.isGuest) {
-          if (!quiz) {
-            quiz = await Quiz.findById(session.quizId).select('recommendations');
+          if (ObjectId.isValid(userId)) {
+            hasRecommended = !!(await Recommendation.exists({
+              userId: new ObjectId(userId),
+              quizId: session.quizId
+            }));
           }
-          hasRecommended = quiz?.recommendations?.some(rec => rec.toString() === userId.toString()) || false;
         }
 
         const joinSuccessData = {
@@ -400,7 +447,8 @@ module.exports = (io, app, redisClient) => {
         socket.emit('join-success', joinSuccessData);
 
         // 점수판 전송 (메모리의 session 상태 사용 - DB 저장 완료 후이므로 최신 데이터)
-        emitScoreboard(io, sessionId, session.players);
+        if (session.isStarted && session.isActive) {
+          emitScoreboard(io, sessionId, session.players);
 
         // 스킵투표 인원수 공개
         io.to(sessionId).emit('voteSkipUpdate', {
@@ -412,7 +460,8 @@ module.exports = (io, app, redisClient) => {
         });
 
         // 대기 상태 알림
-        io.to(sessionId).emit('waiting-room', {
+        } else {
+          io.to(sessionId).emit('waiting-room', {
           success: true,
           type: 'waiting-room',
           data: {
@@ -426,6 +475,7 @@ module.exports = (io, app, redisClient) => {
             isStarted: session.isStarted || false
           }
         });
+        }
 
 
         socket.emit('host-updated', {
@@ -456,6 +506,7 @@ module.exports = (io, app, redisClient) => {
 
             if (quiz) {
               const quizObj = quiz.toObject();
+              sessionRevealCache.set(sessionId, buildRevealCacheFromQuiz(quizObj));
 
               quizDataToSend = {
                 ...quizObj,
@@ -609,9 +660,7 @@ module.exports = (io, app, redisClient) => {
 
             // 🛡️ 모든 플레이어가 나간 경우 즉시 메모리 정리
             if (connectedCount === 0) {
-              if (sessionUserCache.has(sessionId)) {
-                sessionUserCache.delete(sessionId);
-              }
+              clearSessionRuntimeCaches(sessionId);
               return;
             }
 
@@ -731,6 +780,7 @@ module.exports = (io, app, redisClient) => {
 
         // 🛡️ 정답 해시화: 캐시 + 클라이언트 전송용
         const quizData = quiz.toObject();
+        sessionRevealCache.set(sessionId, buildRevealCacheFromQuiz(quizData));
         const hashedQuiz = {
           ...quizData,
           questions: quizData.questions.map(q => {
@@ -793,7 +843,14 @@ module.exports = (io, app, redisClient) => {
             quiz: hashedQuiz, // 해시화된 퀴즈 전송
             host: session.host?.toString() || '__NONE__',
             questionOrder: session.questionOrder,
-            currentQuestionIndex: session.questionOrder[0]
+            currentQuestionIndex: session.questionOrder[0],
+            players: session.players.map(p => ({
+              nickname: p.nickname,
+              score: p.score,
+              correctAnswersCount: p.correctAnswersCount || 0,
+              connected: p.connected,
+              profileImage: p.profileImage
+            }))
           }
         });
 
@@ -892,6 +949,7 @@ module.exports = (io, app, redisClient) => {
 
     // 일반 채팅은 DB에 로그 저장
     socket.on('chatMessage', async ({ sessionId, message }) => {
+        touchSessionCache(sessionId);
         // 캐시에서 사용자 정보 조회 (DB 조회 없음!)
         const userInfo = sessionUserCache.get(sessionId)?.get(socket.userId) || {
             nickname: null,
@@ -1304,13 +1362,11 @@ module.exports = (io, app, redisClient) => {
 
       if (session.revealedAt) return;
 
-      const quiz = await Quiz.findById(session.quizId);
       const orderIndex = session.currentQuestionIndex;
       const actualIndex = session.questionOrder[orderIndex];
-      const question = quiz.questions[actualIndex];
       const qIndex = String(actualIndex);
-
-      if (!quiz || !quiz.questions || !quiz.questions[actualIndex]) return;
+      const revealData = await getRevealData(sessionId, session.quizId, actualIndex);
+      if (!revealData) return;
 
       const revealedAt = new Date();
 
@@ -1356,8 +1412,8 @@ module.exports = (io, app, redisClient) => {
       io.to(sessionId).emit('revealAnswer_Emit', {
         success: true,
         data: {
-          answers: question.answers,
-          answerImage: question.answerImageBase64,
+          answers: revealData.answers,
+          answerImage: revealData.answerImage,
           index: actualIndex,
           revealedAt: session.revealedAt,
           correctUsers: correctUsers
@@ -1521,11 +1577,11 @@ module.exports = (io, app, redisClient) => {
         // 중복투표 방지
         if (session.revealedAt) return;
 
-        const quiz = await Quiz.findById(session.quizId);
         const orderIndex = session.currentQuestionIndex;
         const actualIndex = session.questionOrder[orderIndex];
-        const question = quiz.questions[actualIndex];
         const qIndex = String(actualIndex);
+        const revealData = await getRevealData(sessionId, session.quizId, actualIndex);
+        if (!revealData) return;
 
         const revealedAt = new Date();
 
@@ -1570,8 +1626,8 @@ module.exports = (io, app, redisClient) => {
         io.to(sessionId).emit('revealAnswer_Emit', {
           success: true,
           data: {
-            answers: question.answers,
-            answerImage: question.answerImageBase64,
+            answers: revealData.answers,
+            answerImage: revealData.answerImage,
             index: actualIndex,
             revealedAt,
             correctUsers: correctUsers
@@ -1718,8 +1774,6 @@ module.exports = (io, app, redisClient) => {
       let session = await safeFindSessionById(GameSession, sessionId);
       if (!session) return;
 
-      const quiz = await Quiz.findById(session.quizId);
-
       const nextQuestionIndex = session.currentQuestionIndex + 1;
 
       // 모든 문제를 완료한 경우
@@ -1764,9 +1818,7 @@ module.exports = (io, app, redisClient) => {
         }
 
         // 세션 관련 캐시 정리 (메모리 누수 방지)
-        if (sessionUserCache.has(sessionId)) {
-          sessionUserCache.delete(sessionId);
-        }
+        clearSessionRuntimeCaches(sessionId);
 
         // ⚡ Redis 키 정리 (모든 문제의 첫 번째 정답자 정보 + 접속 인원 카운터 삭제)
         if (redisClient && redisClient.isOpen) {
@@ -1792,7 +1844,7 @@ module.exports = (io, app, redisClient) => {
         );
 
         // 제작자 닉네임 (Quiz에 저장된 값 사용 - DB 조회 불필요)
-        const creatorNickname = quiz?.creatorNickname || '알 수 없음';
+        const creatorNickname = session.cachedQuizData?.creatorNickname || '알 수 없음';
 
         io.to(sessionId).emit('end', {
           success: true,
@@ -1933,24 +1985,30 @@ module.exports = (io, app, redisClient) => {
 
         // 정답 공개 상태로 변경
         const revealedAt = new Date();
-        session.revealedAt = revealedAt;
+        const updateResult = await GameSession.findOneAndUpdate(
+          {
+            _id: sessionId,
+            revealedAt: null
+          },
+          {
+            $set: { revealedAt }
+          },
+          { new: true }
+        );
 
-        const success = await safeSaveSession(session);
-        if (!success) {
-          console.error('객관식 완료 처리 중 세션 저장 실패');
+        if (!updateResult) {
           return;
         }
+        session = updateResult;
 
-        // 퀴즈 정보 가져오기
-        const Quiz = require('../models/Quiz')(app.get('quizDb'));
-        const quiz = await Quiz.findById(session.quizId);
-        const question = quiz.questions[actualIndex];
+        const revealData = await getRevealData(sessionId, session.quizId, actualIndex);
+        if (!revealData) return;
 
         io.to(sessionId).emit('revealAnswer_Emit', {
           success: true,
           data: {
-            answers: question.answers,
-            answerImage: question.answerImageBase64,
+            answers: revealData.answers,
+            answerImage: revealData.answerImage,
             index: actualIndex,
             revealedAt,
             correctUsers: correctUsers

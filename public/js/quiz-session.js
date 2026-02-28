@@ -669,8 +669,6 @@ function sendMessage() {
         window.__protectedEmit('correct', {
             sessionId,
             questionIndex: actualIndex,
-            currentIndex,
-            timestamp: Date.now(),
             answer: message // 정답 평문 전송 (서버에서 재검증)
         });
     } else {
@@ -1088,8 +1086,6 @@ function selectChoice(choice) {
         window.__protectedEmit('choiceQuestionCorrect', {
             sessionId,
             questionIndex: actualIndex,
-            currentIndex,
-            timestamp: Date.now(),
             answer: choice // 선택한 답 평문 전송 (서버에서 재검증)
         });
     } else if (!window.__isRevealingAnswer) {
@@ -1097,8 +1093,6 @@ function selectChoice(choice) {
         window.__protectedEmit('choiceQuestionIncorrect', {
             sessionId,
             questionIndex: actualIndex,
-            currentIndex,
-            timestamp: Date.now(),
             answer: choice // 오답도 평문 전송 (서버에서 검증)
         });
     }
@@ -1625,7 +1619,7 @@ function setupSocketListeners() {
                 return;
             }
 
-            const { quiz, host: newHost, questionOrder: order, isReconnect, currentIndex: serverCurrentIndex, playerAnswered, revealedAt } = data;
+            const { quiz, host: newHost, questionOrder: order, isReconnect, currentIndex: serverCurrentIndex, playerAnswered, revealedAt, players } = data;
 
             if (!quiz || !Array.isArray(quiz.questions)) {
                 console.error('잘못된 퀴즈 구조:', quiz);
@@ -1684,6 +1678,10 @@ function setupSocketListeners() {
         currentIndex = isReconnect ? (serverCurrentIndex || 0) : 0;
 
         showGameSection();
+
+        if (Array.isArray(players) && players.length > 0) {
+            renderScoreboard(players);
+        }
 
         // 문제 표시 (silent 모드: 타이머 시작하지 않음)
         showQuestion({ silent: true });
@@ -2295,16 +2293,10 @@ function sendWaitingMessage() {
     
     if (!message) return;
     
-    // DOM에서 사용자 정보 추출
-    const userProfile = getUserProfileFromDOM();
-    
     // 서버에 전송 (사용자 정보 및 타임스탬프 포함)
     socket.emit('chatMessage', { 
         sessionId, 
         message,
-        nickname: userProfile.nickname,
-        profileImage: userProfile.profileImage,
-        timestamp: Date.now() // 타임스탬프 추가
     });
     
     input.value = '';
